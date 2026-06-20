@@ -1,0 +1,4 @@
+agent AgentWalletBucket {
+  bind      -> [propose_payment]
+  invariant -> token_bucket(ceiling = 2) bound 2
+}

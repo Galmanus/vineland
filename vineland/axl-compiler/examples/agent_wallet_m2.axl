@@ -1,0 +1,4 @@
+agent AgentWallet {
+  bind      -> [read_balance, propose_payment]
+  invariant -> sliding_window(ceiling = 2) bound 2
+}

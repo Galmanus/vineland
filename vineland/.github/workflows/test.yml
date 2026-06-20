@@ -1,0 +1,66 @@
+name: test
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Build shared (consumed by web + listener)
+        run: pnpm --filter @vineland/shared build
+
+      - name: Lint
+        run: pnpm -r lint
+
+      - name: Workspace tests (shared, web, listener)
+        run: pnpm -r test
+
+      - name: Start local Supabase stack
+        run: supabase start
+
+      - name: API edge function tests (deno)
+        env:
+          SUPABASE_URL: http://127.0.0.1:54321
+          SUPABASE_ANON_KEY: YOUR_SUPABASE_KEY
+          SUPABASE_SERVICE_ROLE_KEY: YOUR_SUPABASE_KEY
+          RATE_BRL_USDC: "5.80"
+        run: |
+          cd supabase/functions/api
+          deno test --allow-all --no-check --env-file=../../../.env.local.ci test/ || \
+            deno test --allow-all --no-check test/
+
+      - name: Build web
+        run: pnpm --filter @vineland/web build
+
+      - name: Build listener
+        run: pnpm --filter @vineland/listener build
+
+      - name: Stop Supabase
+        if: always()
+        run: supabase stop || true

@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Vineland · pitch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root { --bone:#f1eee7; --ink:#0a0a0a; --gold:#FDDA24; --gray:#6f6862; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior:smooth; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bone); color:var(--ink); -webkit-font-smoothing:antialiased; }
+  .mono { font-family:'JetBrains Mono',monospace; }
+  section { min-height:100svh; scroll-snap-align:start; display:flex; flex-direction:column; justify-content:center;
+    padding:7vh 8vw; position:relative; border-top:1px solid rgba(10,10,10,.08); }
+  .eyebrow { font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.28em; text-transform:uppercase; color:var(--gray); display:flex; align-items:center; gap:14px; }
+  .eyebrow::before { content:''; width:34px; height:1px; background:currentColor; opacity:.45; }
+  h1 { font-weight:800; letter-spacing:-.04em; line-height:.92; font-size:clamp(2.6rem,8vw,6.5rem); }
+  h2 { font-weight:800; letter-spacing:-.04em; line-height:.95; font-size:clamp(2rem,6vw,4.5rem); }
+  p.big { font-size:clamp(1.25rem,2.6vw,2rem); line-height:1.3; max-width:26ch; margin-top:2rem; }
+  p.lead { font-size:clamp(1.05rem,1.7vw,1.4rem); line-height:1.5; max-width:50ch; margin-top:1.5rem; color:rgba(10,10,10,.7); }
+  .gold { color:var(--gold); }
+  .hl { background:var(--gold); color:var(--ink); padding:0 .1em; box-decoration-break:clone; -webkit-box-decoration-break:clone; }
+  .stack { display:flex; flex-direction:column; gap:1.1rem; margin-top:2.5rem; }
+  .row { display:flex; gap:1rem; align-items:flex-start; }
+  .row .k { color:var(--gold); font-weight:800; font-size:1.4rem; line-height:1; }
+  .pagenum { position:absolute; bottom:4vh; right:8vw; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.2em; color:rgba(10,10,10,.35); }
+  .brand { position:absolute; top:4vh; left:8vw; font-weight:800; font-size:1.4rem; letter-spacing:-.02em; }
+  .brand .dot { color:var(--gold); }
+  table { border-collapse:collapse; margin-top:2.5rem; width:100%; max-width:780px; font-size:clamp(.85rem,1.4vw,1.05rem); }
+  td,th { padding:.7rem .6rem; text-align:center; border-bottom:1px solid rgba(10,10,10,.1); }
+  th:first-child,td:first-child { text-align:left; }
+  .col-us { background:rgba(253,218,36,.16); font-weight:700; }
+  th.col-us { background:var(--gold); }
+  .x { color:rgba(10,10,10,.25); }
+  .v { font-weight:800; }
+  .pills { display:flex; flex-wrap:wrap; gap:.6rem; margin-top:2rem; }
+  .pill { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; padding:.5rem .8rem; border-radius:999px; border:1px solid rgba(10,10,10,.18); }
+  .pill.live { background:var(--ink); color:var(--gold); border-color:var(--ink); }
+  .stats { display:grid; grid-template-columns:repeat(2,1fr); gap:clamp(1.4rem,3vw,2.6rem); margin-top:3rem; max-width:880px; }
+  .stat .n { font-weight:800; letter-spacing:-.03em; font-size:clamp(2rem,5vw,3.6rem); line-height:1; }
+  .stat .n .gold { color:var(--gold); }
+  .stat .l { margin-top:.5rem; font-size:clamp(.85rem,1.3vw,1rem); color:rgba(10,10,10,.6); line-height:1.35; max-width:30ch; }
+  .src { position:absolute; bottom:4vh; left:8vw; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.1em; color:rgba(10,10,10,.3); max-width:60vw; }
+  .src.dark { color:rgba(241,238,231,.3); }
+  .moneylist { display:flex; flex-direction:column; gap:1.3rem; margin-top:2.5rem; max-width:62ch; }
+  .money .h { font-weight:800; font-size:clamp(1.1rem,1.8vw,1.4rem); }
+  .money .m { color:rgba(10,10,10,.62); font-size:clamp(.95rem,1.4vw,1.15rem); margin-top:.2rem; }
+  a { color:inherit; }
+  .hint { position:fixed; bottom:14px; left:50%; transform:translateX(-50%); font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:rgba(10,10,10,.3); z-index:10; }
+  @media (max-width:760px){ .stats{grid-template-columns:1fr} .brand,.pagenum{left:6vw;right:6vw} section{padding:9vh 6vw} .src{max-width:80vw} }
+</style>
+</head>
+<body>
+
+<!-- 1 cover -->
+<section>
+  <div class="brand">vineland<span class="dot">.</span></div>
+  <div class="eyebrow">live on mainnet · stellar</div>
+  <h1 style="margin-top:2rem">YOUR DOLLARS,<br><span class="gold">IN PIX.</span></h1>
+  <p class="big">The dollar piggy bank that pays your bills on its own — and nobody can freeze it.</p>
+  <div class="pagenum">01</div>
+</section>
+
+<!-- 2 pain -->
+<section>
+  <div class="eyebrow">the real pain</div>
+  <h2 style="margin-top:2rem">Holding dollars hurts today.</h2>
+  <div class="stack" style="max-width:46ch">
+    <div class="row"><span class="k">→</span><p class="lead" style="margin:0">You lose <b>~5%</b> just to get in. 3.5% IOF + the bank's spread, every single time.</p></div>
+    <div class="row"><span class="k">→</span><p class="lead" style="margin:0">And the money <b>isn't yours</b>. A custodial account freezes, blocks, holds it — from banks to Stripe.</p></div>
+  </div>
+  <div class="pagenum">02</div>
+</section>
+
+<!-- 3 the shift -->
+<section style="background:#101010;color:var(--bone)">
+  <div class="eyebrow" style="color:#8a857d">the shift</div>
+  <h1 style="margin-top:2rem;color:var(--bone)">A bank is<br>a promise.</h1>
+  <h1 style="color:var(--gold)">Vineland is a proof.</h1>
+  <p class="lead" style="color:rgba(241,238,231,.65);max-width:44ch">We stopped asking you to trust us. The money obeys rules anyone can verify on a public ledger — not our word.</p>
+  <div class="pagenum" style="color:rgba(241,238,231,.3)">03</div>
+</section>
+
+<!-- 4 what it is -->
+<section>
+  <div class="eyebrow">what it is</div>
+  <h2 style="margin-top:2rem">A dollar account<br>that's <span class="hl">only yours</span>.</h2>
+  <div class="stack" style="max-width:48ch">
+    <div class="row"><span class="k">1</span><p class="lead" style="margin:0"><b>Self-custody.</b> The dollar stays in your hands (biometrics). Vineland never touches it. Nobody freezes it.</p></div>
+    <div class="row"><span class="k">2</span><p class="lead" style="margin:0"><b>Pays on its own, by your rules.</b> Teach it once; it executes. Outside the rule, it locks.</p></div>
+    <div class="row"><span class="k">3</span><p class="lead" style="margin:0"><b>Real dollars, in Pix.</b> ~1.9%, no IOF.</p></div>
+  </div>
+  <div class="pagenum">04</div>
+</section>
+
+<!-- 5 MARKET -->
+<section>
+  <div class="eyebrow">the market is already here</div>
+  <h2 style="margin-top:1.5rem">And it's already in <span class="hl">stablecoins</span>.</h2>
+  <div class="stats">
+    <div class="stat"><div class="n">R$ <span class="gold">361 bn</span></div><div class="l">stablecoin volume in Brazil / year — up 480× in 6 years.</div></div>
+    <div class="stat"><div class="n"><span class="gold">98%</span></div><div class="l">of what Brazilians buy abroad is already stablecoin (US$6.8bn of US$6.9bn, Q1'26).</div></div>
+    <div class="stat"><div class="n"><span class="gold">174 M</span></div><div class="l">Pix users · 6.5 bn transactions/month. The central bank is piloting USDC in Pix.</div></div>
+    <div class="stat"><div class="n">US$ <span class="gold">8 bn</span></div><div class="l">Brazil's annual remittance corridor. + 6.5 M crypto investors.</div></div>
+  </div>
+  <div class="src">sources: Portal do Bitcoin (R$361bn/480×); Receita Federal Q1 2026 (98%); BCB (Pix 174M / USDC-Pix pilot); BR remittance estimates.</div>
+  <div class="pagenum">05</div>
+</section>
+
+<!-- 6 5x0 -->
+<section>
+  <div class="eyebrow">head to head</div>
+  <h2 style="margin-top:2rem">Best at the <span class="gold">5</span> that matter.</h2>
+  <table>
+    <thead><tr><th></th><th class="col-us">Vineland</th><th>Bank</th><th>Stripe</th><th>Nomad</th></tr></thead>
+    <tbody>
+      <tr><td>Yours, never frozen</td><td class="col-us">✓</td><td class="x">✗</td><td class="x">✗</td><td class="x">✗</td></tr>
+      <tr><td>No cap to hold</td><td class="col-us">✓</td><td class="x">✗</td><td class="x">✗</td><td class="x">✗</td></tr>
+      <tr><td>Pays your bills on its own</td><td class="col-us">✓</td><td class="x">✗</td><td class="x">✗</td><td class="x">✗</td></tr>
+      <tr><td>Real dollars in your hand</td><td class="col-us">✓</td><td class="x">✗</td><td class="x">✗</td><td class="x">✗</td></tr>
+      <tr><td>Total cost (with IOF)</td><td class="col-us v">~1.9%</td><td>~5%</td><td>~4%</td><td>~5.5%</td></tr>
+    </tbody>
+  </table>
+  <div class="pagenum">06</div>
+</section>
+
+<!-- 7 proof -->
+<section style="background:#101010;color:var(--bone)">
+  <div class="eyebrow" style="color:#8a857d">verify, don't trust</div>
+  <h2 style="margin-top:2rem;color:var(--bone)">Not a demo.<br><span class="gold">It's on the ledger.</span></h2>
+  <p class="lead" style="color:rgba(241,238,231,.65);max-width:44ch">Real contracts, a real payment settled on mainnet. Click and check — every claim resolves to a contract id or a tx hash.</p>
+  <div class="pills">
+    <span class="pill live">recurring rail · mainnet</span>
+    <span class="pill live">real payment · settled</span>
+    <span class="pill live">attester · fail-closed</span>
+    <span class="pill" style="border-color:rgba(241,238,231,.25);color:rgba(241,238,231,.7)">pre-auth v0.2 · testnet</span>
+  </div>
+  <div class="pagenum" style="color:rgba(241,238,231,.3)">07</div>
+</section>
+
+<!-- 8 moat / agent + market -->
+<section>
+  <div class="eyebrow">the moat · and the US$15 trillion market</div>
+  <h2 style="margin-top:1.5rem">Assume the agent<br>is already <span class="hl">owned</span>.</h2>
+  <p class="lead" style="max-width:54ch">An agent with a wallet can be injected, redirected, compromised. With Vineland the money <b>survives</b> — the limit is <b>proven on-chain</b> and held by an independent signer the agent's runtime can't control. <b class="gold">Nobody else ships this on mainnet.</b></p>
+  <div class="stats" style="grid-template-columns:repeat(3,1fr);margin-top:2.2rem">
+    <div class="stat"><div class="n">US$ <span class="gold">15 T</span></div><div class="l">in AI-agent-mediated purchases by 2028 (Gartner).</div></div>
+    <div class="stat"><div class="n">US$ <span class="gold">3–5 T</span></div><div class="l">in retail agentic commerce by 2030 (McKinsey).</div></div>
+    <div class="stat"><div class="n gold">USDC</div><div class="l">the dominant rail for agent payments. Visa, Stripe, Google entering.</div></div>
+  </div>
+  <div class="src">sources: Gartner (US$15T/2028); McKinsey (US$3–5T/2030); Keyrock/CoinDesk (x402 · stablecoins).</div>
+  <div class="pagenum">08</div>
+</section>
+
+<!-- 9 why stellar / FOMO -->
+<section>
+  <div class="eyebrow">why stellar, why now</div>
+  <h2 style="margin-top:2rem">Your #1 market.<br>The agent app you're missing.</h2>
+  <div class="stack" style="max-width:54ch">
+    <div class="row"><span class="k">→</span><p class="lead" style="margin:0">SDF 2026 goals: <b>+US$1 bn network value</b>, LatAm as a core market, <b>agent payments (x402)</b>. Vineland produces exactly these metrics.</p></div>
+    <div class="row"><span class="k">→</span><p class="lead" style="margin:0">The SCF has already distributed <b>US$42 M</b> to 650+ projects. We're the consumer product missing in your #1 market — and already a live x402 app.</p></div>
+    <div class="row"><span class="k">→</span><p class="lead" style="margin:0">Every month without backing it, this volume goes to Base or Solana. <b>The cost is ceding Brazil.</b></p></div>
+  </div>
+  <div class="src">sources: SDF 2026 strategy (+US$1bn network value · x402); Stellar Community Fund (US$42M / 650+ projects).</div>
+  <div class="pagenum">09</div>
+</section>
+
+<!-- 10 monetization + math -->
+<section>
+  <div class="eyebrow">the revenue machine</div>
+  <h2 style="margin-top:1.5rem">Profits without becoming a bank.</h2>
+  <div class="moneylist">
+    <div class="money"><div class="h">1 · Conversion spread <span class="gold">~1.9%</span> <span style="font-weight:500;color:#A16207">· already live</span></div><div class="m">On the US$8 bn/yr corridor: capturing 1% = US$80 M flow → <b>~US$1.5 M/yr</b>. Each 1% of the R$361 bn stablecoin market at 1.9% = <b>R$68 M</b>.</div></div>
+    <div class="money"><div class="h">2 · Yield-distribution <span class="gold">(Selic ~13%)</span></div><div class="m">Idle balance earns; we keep ~1.5% spread on the yield, with no custody, via a licensed partner. 100k users × R$2k = R$200 M idle → <b>~R$3 M/yr</b> recurring.</div></div>
+    <div class="money"><div class="h">3 · Interchange <span class="gold">~1.5%</span> + per-agent-tx fee</div><div class="m">Every card spend earns interchange. Every agent payment a provable-bound fee (1–2%, where Stripe's 2.9%+$0.30 can't go).</div></div>
+    <div class="money"><div class="h">4 · License the agent + security layer to enterprises <span class="gold">US$50k–1.2M/yr</span></div><div class="m">Companies running AI agents that spend money need <b>provable spend controls</b>. We sell the attester + on-chain bound as the governance/compliance layer — the exact market that pays <b>US$50k–1.2M ACV</b> (up to US$5M at the top). The biggest check per client.</div></div>
+  </div>
+  <p class="mono" style="margin-top:1.6rem;font-size:12px;color:rgba(10,10,10,.45)">two engines: consumer (spread/yield/interchange, scales with volume) + B2B security/attestation (high-margin enterprise ACV). non-custodial, never a VASP. illustrative figures. sources: Dirr AI Pricing Index 2026; AI Security Pricing Benchmark 2026.</p>
+  <div class="pagenum">10</div>
+</section>
+
+<!-- 11 state -->
+<section>
+  <div class="eyebrow">what's already running</div>
+  <h2 style="margin-top:2rem">No vaporware.</h2>
+  <div class="pills">
+    <span class="pill live">recurring rail · mainnet</span>
+    <span class="pill live">attester · live</span>
+    <span class="pill live">non-custodial wallet · mainnet</span>
+    <span class="pill">pre-auth autocharge · testnet</span>
+    <span class="pill">usdc↔pix ramp · integrated</span>
+  </div>
+  <p class="lead" style="max-width:48ch;margin-top:2.5rem">The tech is already in hand. Built solo, in Brazil. What's missing is fuel to put it in the country's hands.</p>
+  <div class="pagenum">11</div>
+</section>
+
+<!-- 12 objections -->
+<section>
+  <div class="eyebrow">the hard questions</div>
+  <h2 style="margin-top:1.5rem">Already answered.</h2>
+  <div class="stack" style="max-width:60ch;gap:1rem">
+    <div class="row"><span class="k">?</span><p class="lead" style="margin:0"><b>“What about regulation?”</b> BCB Res 561 only bans stablecoins on the cross-border eFX rail. Domestic holding + self-custody is allowed. And we're not a VASP — the licensed partner carries that.</p></div>
+    <div class="row"><span class="k">?</span><p class="lead" style="margin:0"><b>“What if they tax stablecoins?”</b> The IOF proposal didn't pass and would only hit &gt;R$10k/mo. Even with it, the moat isn't just price — it's <b>non-custodial + automation</b>, which no one has.</p></div>
+    <div class="row"><span class="k">?</span><p class="lead" style="margin:0"><b>“Any traction?”</b> We're <b>pre-distribution, not pre-product</b>. The rail is live on mainnet; the market already exists (R$361 bn, 98% stablecoin). What's missing is fuel, not validation.</p></div>
+    <div class="row"><span class="k">?</span><p class="lead" style="margin:0"><b>“Solo founder?”</b> Built solo to mainnet, in weeks. The ask is exactly the fuel to become a team.</p></div>
+  </div>
+  <div class="pagenum">12</div>
+</section>
+
+<!-- 13 defensibility -->
+<section style="background:#101010;color:var(--bone)">
+  <div class="eyebrow" style="color:#8a857d">defensibility</div>
+  <h2 style="margin-top:1.5rem;color:var(--bone)">Why they<br>can't <span class="gold">copy it</span>.</h2>
+  <div class="stack" style="max-width:58ch;gap:1rem">
+    <div class="row"><span class="k">→</span><p class="lead" style="margin:0;color:rgba(241,238,231,.72)"><b style="color:#fff">Their model forbids it.</b> A custodial incumbent lives on <b>holding</b> your money — Circle earns <b>94% of revenue</b> from interest on reserves. Going non-custodial kills their own business.</p></div>
+    <div class="row"><span class="k">→</span><p class="lead" style="margin:0;color:rgba(241,238,231,.72)"><b style="color:#fff">The proof is the wedge; the moat is distribution.</b> Being first in Stellar's #1 market (Brazil) + making the proof inescapable (bound-to-deploy). Copying the code is easy; copying the position isn't.</p></div>
+    <div class="row"><span class="k">→</span><p class="lead" style="margin:0;color:rgba(241,238,231,.72)"><b style="color:#fff">Not a VASP = light and fast</b> where they're heavy and slow.</p></div>
+  </div>
+  <div class="src dark">Circle Q1 2026: 94% of revenue = reserve income.</div>
+  <div class="pagenum" style="color:rgba(241,238,231,.3)">13</div>
+</section>
+
+<!-- 14 ask -->
+<section style="background:var(--gold);color:var(--ink)">
+  <div class="eyebrow" style="color:rgba(10,10,10,.55)">the ask</div>
+  <h1 style="margin-top:2rem">Fuel to put it<br>in Brazil's<br>hands.</h1>
+  <p class="lead" style="color:rgba(10,10,10,.72);max-width:48ch">We're not asking to build an idea — it already works on mainnet. We're asking to scale distribution in Stellar's #1 market, in a R$361 bn market that's already 98% stablecoin.</p>
+  <div class="pagenum">14</div>
+</section>
+
+<!-- 15 close -->
+<section style="background:#101010;color:var(--bone)">
+  <div class="brand" style="color:var(--bone)">vineland<span class="dot">.</span></div>
+  <h1 style="color:var(--bone)">Money was<br>a promise.</h1>
+  <h1 style="color:var(--gold)">We made it a proof.</h1>
+  <p class="lead mono" style="color:rgba(241,238,231,.6);margin-top:3rem;letter-spacing:.04em">app.vineland.cc &nbsp;·&nbsp; app.vineland.cc/builders &nbsp;·&nbsp; live on mainnet</p>
+  <div class="pagenum" style="color:rgba(241,238,231,.3)">15</div>
+</section>
+
+<div class="hint">↓ / space · navigate</div>
+<script>
+  const secs=[...document.querySelectorAll('section')];
+  let i=0;
+  function go(d){ i=Math.max(0,Math.min(secs.length-1,i+d)); secs[i].scrollIntoView({behavior:'smooth'}); }
+  addEventListener('keydown',e=>{
+    if(['ArrowDown','ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();go(1);}
+    if(['ArrowUp','ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();go(-1);}
+  });
+  const io=new IntersectionObserver(es=>es.forEach(en=>{ if(en.isIntersecting) i=secs.indexOf(en.target); }),{threshold:.5});
+  secs.forEach(s=>io.observe(s));
+</script>
+</body>
+</html>

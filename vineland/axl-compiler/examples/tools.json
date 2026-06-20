@@ -1,0 +1,5 @@
+{
+  "read_balance":       { "name": "read_balance",       "description": "read an account balance",      "input_schema": { "type": "object", "properties": {}, "additionalProperties": false } },
+  "propose_settlement": { "name": "propose_settlement", "description": "propose a settlement decision", "input_schema": { "type": "object", "properties": {}, "additionalProperties": false } },
+  "transfer_funds":     { "name": "transfer_funds",     "description": "MOVE money irreversibly",       "input_schema": { "type": "object", "properties": {}, "additionalProperties": false } }
+}

@@ -1,0 +1,11 @@
+{
+  "CounselDecision": {
+    "type": "object",
+    "properties": {
+      "action":             { "type": "string" },
+      "dimensions_touched": { "type": "number" }
+    },
+    "required": ["action", "dimensions_touched"],
+    "additionalProperties": false
+  }
+}

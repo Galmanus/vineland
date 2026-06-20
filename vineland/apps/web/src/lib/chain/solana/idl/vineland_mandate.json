@@ -1,0 +1,570 @@
+{
+  "address": "CmDKY8MxCWkCN9etSeKApHKnGuTKK6vn7qzhTkAtM9Bv",
+  "metadata": {
+    "name": "vineland_mandate",
+    "version": "0.1.0",
+    "spec": "0.1.0"
+  },
+  "instructions": [
+    {
+      "name": "charge",
+      "docs": [
+        "Agent executes a bounded charge to an allowlisted recipient.",
+        "Fail-closed: paused, over per-payment cap, over monthly cap, or recipient",
+        "not on the allowlist → reverts. Rolls the period when elapsed."
+      ],
+      "discriminator": [
+        26,
+        55,
+        197,
+        209,
+        93,
+        77,
+        242,
+        15
+      ],
+      "accounts": [
+        {
+          "name": "agent",
+          "signer": true
+        },
+        {
+          "name": "mandate",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  110,
+                  100,
+                  97,
+                  116,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mandate.owner",
+                "account": "Mandate"
+              },
+              {
+                "kind": "account",
+                "path": "mandate.mint",
+                "account": "Mandate"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "owner_token",
+          "writable": true
+        },
+        {
+          "name": "recipient_token",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "init_mandate",
+      "docs": [
+        "Owner creates a mandate that delegates bounded spend to `agent`."
+      ],
+      "discriminator": [
+        239,
+        112,
+        193,
+        182,
+        84,
+        206,
+        66,
+        109
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "mandate",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  110,
+                  100,
+                  97,
+                  116,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "agent",
+          "type": "pubkey"
+        },
+        {
+          "name": "per_payment_cap",
+          "type": "u64"
+        },
+        {
+          "name": "monthly_cap",
+          "type": "u64"
+        },
+        {
+          "name": "period_secs",
+          "type": "i64"
+        },
+        {
+          "name": "allowed",
+          "type": {
+            "vec": "pubkey"
+          }
+        }
+      ]
+    },
+    {
+      "name": "pay_split",
+      "docs": [
+        "One-time checkout split: pay `amount` from the buyer, with `fee_bp` going",
+        "to the platform and the rest to the merchant — in ONE instruction (one CPI",
+        "for a smart wallet like LazorKit, whose hook executes a single CPI). The",
+        "split is computed on-chain (integer floor; dust accrues to the merchant,",
+        "never overcharges the platform), so it cannot be tampered client-side.",
+        "Authority is the buyer (`payer`), a normal signer — no mandate/delegate."
+      ],
+      "discriminator": [
+        210,
+        192,
+        93,
+        102,
+        207,
+        166,
+        128,
+        25
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "signer": true
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "payer_token",
+          "writable": true
+        },
+        {
+          "name": "merchant_token",
+          "writable": true
+        },
+        {
+          "name": "platform_token",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "fee_bp",
+          "type": "u16"
+        },
+        {
+          "name": "order_id",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "set_paused",
+      "discriminator": [
+        91,
+        60,
+        125,
+        192,
+        176,
+        225,
+        166,
+        218
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "mandate"
+          ]
+        },
+        {
+          "name": "mandate",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  110,
+                  100,
+                  97,
+                  116,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "mandate.mint",
+                "account": "Mandate"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "paused",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "update_caps",
+      "discriminator": [
+        188,
+        115,
+        142,
+        158,
+        12,
+        242,
+        220,
+        239
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "mandate"
+          ]
+        },
+        {
+          "name": "mandate",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  110,
+                  100,
+                  97,
+                  116,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "mandate.mint",
+                "account": "Mandate"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "per_payment_cap",
+          "type": "u64"
+        },
+        {
+          "name": "monthly_cap",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Mandate",
+      "discriminator": [
+        113,
+        216,
+        98,
+        159,
+        185,
+        63,
+        55,
+        18
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "Charged",
+      "discriminator": [
+        167,
+        170,
+        67,
+        179,
+        47,
+        88,
+        221,
+        132
+      ]
+    },
+    {
+      "name": "SplitPaid",
+      "discriminator": [
+        223,
+        17,
+        5,
+        250,
+        228,
+        37,
+        72,
+        80
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "TooManyRecipients",
+      "msg": "too many allowlisted recipients"
+    },
+    {
+      "code": 6001,
+      "name": "BadCaps",
+      "msg": "bad caps"
+    },
+    {
+      "code": 6002,
+      "name": "BadPeriod",
+      "msg": "bad period"
+    },
+    {
+      "code": 6003,
+      "name": "Paused",
+      "msg": "mandate is paused"
+    },
+    {
+      "code": 6004,
+      "name": "NotAgent",
+      "msg": "signer is not the mandate agent"
+    },
+    {
+      "code": 6005,
+      "name": "NotOwner",
+      "msg": "signer is not the mandate owner"
+    },
+    {
+      "code": 6006,
+      "name": "OverPerPaymentCap",
+      "msg": "amount over per-payment cap"
+    },
+    {
+      "code": 6007,
+      "name": "RecipientNotAllowed",
+      "msg": "recipient not on allowlist"
+    },
+    {
+      "code": 6008,
+      "name": "OverMonthlyCap",
+      "msg": "amount over monthly cap"
+    },
+    {
+      "code": 6009,
+      "name": "Overflow",
+      "msg": "overflow"
+    },
+    {
+      "code": 6010,
+      "name": "BadAmount",
+      "msg": "amount must be > 0"
+    },
+    {
+      "code": 6011,
+      "name": "BadFeeBp",
+      "msg": "fee_bp must be <= 10000"
+    }
+  ],
+  "types": [
+    {
+      "name": "Charged",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mandate",
+            "type": "pubkey"
+          },
+          {
+            "name": "recipient",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "spent_in_period",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Mandate",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "per_payment_cap",
+            "type": "u64"
+          },
+          {
+            "name": "monthly_cap",
+            "type": "u64"
+          },
+          {
+            "name": "period_secs",
+            "type": "i64"
+          },
+          {
+            "name": "period_start",
+            "type": "i64"
+          },
+          {
+            "name": "spent_in_period",
+            "type": "u64"
+          },
+          {
+            "name": "paused",
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "allowed",
+            "type": {
+              "vec": "pubkey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "SplitPaid",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "payer",
+            "type": "pubkey"
+          },
+          {
+            "name": "merchant",
+            "type": "pubkey"
+          },
+          {
+            "name": "merchant_amount",
+            "type": "u64"
+          },
+          {
+            "name": "fee",
+            "type": "u64"
+          },
+          {
+            "name": "order_id",
+            "docs": [
+              "32-byte order id — binds the on-chain payment to the off-chain order",
+              "(the Solana analogue of the Stellar Memo.hash). Backends reconcile on this."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

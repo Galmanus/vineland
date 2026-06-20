@@ -1,0 +1,45 @@
+node_modules
+dist
+*.log
+.DS_Store
+.turbo
+supabase/.temp
+.vercel
+.fly
+*.tsbuildinfo
+
+# Env files — NEVER commit (audit L4). VITE_-prefixed values get inlined into
+# the world-readable bundle, and server .env holds secrets. Ignore all .env*
+# everywhere, but keep *.example templates tracked.
+.env
+.env.*
+**/.env
+**/.env.*
+!.env.example
+!.env.*.example
+!**/.env.example
+!**/.env.*.example
+
+# Rust / Soroban build artifacts
+target/
+**/target/
+*.wasm.opt
+Cargo.lock.bak
+
+# Test scaffolding
+/tmp/e2e-keys.json
+contracts/*/test_snapshots/
+
+# Hero image backups (local-only; kept out of git for size)
+apps/web/public/hero.png.bak*
+apps/web/public/hero.png.*_rejected
+
+# deploy secrets — never commit
+contracts/subscription/.mainnet-deploy.env
+contracts/*/.mainnet-deploy.env
+contracts/*/.testnet-deploy.env
+
+# build / deploy scratch artifacts
+*.err
+*.xdr
+**/_relayer_bringup.mjs

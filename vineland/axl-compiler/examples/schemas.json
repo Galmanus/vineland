@@ -1,0 +1,11 @@
+{
+  "SettlementDecision": {
+    "type": "object",
+    "properties": {
+      "amount":    { "type": "number" },
+      "recipient": { "type": "string" }
+    },
+    "required": ["amount", "recipient"],
+    "additionalProperties": false
+  }
+}

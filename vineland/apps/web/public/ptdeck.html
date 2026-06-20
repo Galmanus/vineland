@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vineland · Pitch Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --bone:#f1eee7; --ink:#0a0a0a; --lime:#65a30d; --limebright:#b5e853; }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-snap-type:y mandatory; scroll-behavior:smooth; }
+  body{ font-family:"Space Grotesk",ui-sans-serif,system-ui,sans-serif; background:var(--bone); color:var(--ink); -webkit-font-smoothing:antialiased; }
+  .slide{ min-height:100vh; scroll-snap-align:start; display:flex; flex-direction:column; justify-content:center; padding:6vh 8vw; position:relative; border-bottom:1px solid rgba(10,10,10,.08); }
+  .slide.dark{ background:var(--ink); color:var(--bone); border-bottom:1px solid rgba(241,238,231,.08); }
+  .eyebrow{ font-family:"Space Mono",monospace; font-size:11px; text-transform:uppercase; letter-spacing:.3em; color:var(--lime); margin-bottom:28px; }
+  .dark .eyebrow{ color:var(--limebright); }
+  h1{ font-size:clamp(40px,7vw,92px); font-weight:600; letter-spacing:-.045em; line-height:.95; max-width:18ch; }
+  h2{ font-size:clamp(30px,5vw,64px); font-weight:600; letter-spacing:-.04em; line-height:.98; max-width:20ch; }
+  .lime{ color:var(--lime); } .dark .lime{ color:var(--limebright); }
+  p.lead{ font-size:clamp(18px,2.2vw,26px); line-height:1.5; color:rgba(10,10,10,.65); max-width:54ch; margin-top:34px; }
+  .dark p.lead{ color:rgba(241,238,231,.7); }
+  ul{ list-style:none; margin-top:34px; max-width:60ch; }
+  li{ font-size:clamp(16px,1.7vw,21px); line-height:1.45; padding:14px 0; border-top:1px solid rgba(10,10,10,.12); display:flex; gap:14px; }
+  .dark li{ border-top:1px solid rgba(241,238,231,.14); }
+  li .b{ color:var(--lime); flex:none; } .dark li .b{ color:var(--limebright); }
+  .grid3{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:1px; background:rgba(10,10,10,.12); border:1px solid rgba(10,10,10,.12); margin-top:40px; }
+  .dark .grid3{ background:rgba(241,238,231,.14); border-color:rgba(241,238,231,.14); }
+  .cell{ background:var(--bone); padding:28px; }
+  .dark .cell{ background:var(--ink); }
+  .cell .k{ font-family:"Space Mono",monospace; font-size:10px; text-transform:uppercase; letter-spacing:.18em; color:var(--lime); }
+  .dark .cell .k{ color:var(--limebright); }
+  .cell .v{ font-size:clamp(28px,3.5vw,46px); font-weight:600; letter-spacing:-.03em; margin-top:14px; line-height:1; }
+  .cell .d{ font-size:14px; color:rgba(10,10,10,.55); margin-top:10px; line-height:1.4; }
+  .dark .cell .d{ color:rgba(241,238,231,.55); }
+  .num{ position:absolute; bottom:5vh; right:8vw; font-family:"Space Mono",monospace; font-size:11px; letter-spacing:.18em; color:rgba(10,10,10,.35); }
+  .dark .num{ color:rgba(241,238,231,.35); }
+  .brand{ font-family:"Space Mono",monospace; font-size:12px; text-transform:uppercase; letter-spacing:.24em; }
+  .stat{ display:flex; flex-wrap:wrap; gap:48px 64px; margin-top:48px; }
+  .stat .s .v{ font-size:clamp(44px,7vw,84px); font-weight:600; letter-spacing:-.04em; line-height:.9; color:var(--limebright); }
+  .stat .s .l{ font-family:"Space Mono",monospace; font-size:12px; text-transform:uppercase; letter-spacing:.16em; color:rgba(241,238,231,.6); margin-top:14px; max-width:18ch; }
+  .big{ font-size:clamp(28px,4vw,52px); font-weight:500; letter-spacing:-.02em; margin-top:36px; max-width:24ch; line-height:1.05; }
+  .hint{ position:fixed; bottom:18px; left:50%; transform:translateX(-50%); font-family:"Space Mono",monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:rgba(10,10,10,.3); z-index:10; pointer-events:none; }
+  a.cta{ display:inline-flex; align-items:center; margin-top:40px; padding:16px 36px; border-radius:999px; background:var(--limebright); color:var(--ink); font-family:"Space Mono",monospace; font-size:11px; text-transform:uppercase; letter-spacing:.2em; text-decoration:none; }
+</style>
+</head>
+<body>
+
+<!-- 01 · COVER -->
+<section class="slide dark">
+  <div class="eyebrow">agente financeiro em dólar · seed 2026</div>
+  <h1>O dinheiro da sua empresa, no <span class="lime">automático</span>.</h1>
+  <p class="lead">A Vineland cria um agente que paga e recebe em dólar, sozinho, dentro de regras que vivem em contrato. A IA faz o trabalho. O contrato garante que ela nunca passe do limite.</p>
+  <div class="num">01</div>
+</section>
+
+<!-- 02 · PROBLEMA -->
+<section class="slide">
+  <div class="eyebrow">o problema</div>
+  <h2>Automatizar dinheiro hoje é frágil e inseguro.</h2>
+  <ul>
+    <li><span class="b">·</span><span>Cartão é caro, lento e tem chargeback.</span></li>
+    <li><span class="b">·</span><span>Banco é centralizado e pode congelar a sua conta.</span></li>
+    <li><span class="b">·</span><span>Automação financeira depende de um backend que pode ser hackeado.</span></li>
+    <li><span class="b">·</span><span>Um agente de IA não pode receber dinheiro direto sem risco.</span></li>
+    <li><span class="b">·</span><span>E no Brasil, você ainda depende da sorte do real.</span></li>
+  </ul>
+  <div class="num">02</div>
+</section>
+
+<!-- 03 · SOLUÇÃO -->
+<section class="slide dark">
+  <div class="eyebrow">a solução</div>
+  <h2>A regra vive no contrato. <span class="lime">Não na pessoa, nem no agente.</span></h2>
+  <p class="lead">Uma camada de execução financeira on-chain: a IA decide e orquestra, o contrato executa e valida. O dinheiro fica com o usuário, não com a gente. Cada pagamento é público e verificável.</p>
+  <div class="big">Fora da regra, não executa.</div>
+  <div class="num">03</div>
+</section>
+
+<!-- 04 · COMO FUNCIONA -->
+<section class="slide">
+  <div class="eyebrow">como funciona</div>
+  <h2>O usuário define. O dinheiro executa.</h2>
+  <ul>
+    <li><span class="b">01</span><span>Coloca dólar digital (USDC) numa carteira que só ele controla.</span></li>
+    <li><span class="b">02</span><span>Define as regras: limite, destinatários, frequência.</span></li>
+    <li><span class="b">03</span><span>O agente executa os pagamentos recorrentes sozinho.</span></li>
+    <li><span class="b">04</span><span>O contrato valida cada transação antes de pagar.</span></li>
+  </ul>
+  <div class="num">04</div>
+</section>
+
+<!-- 05 · O WEDGE -->
+<section class="slide dark">
+  <div class="eyebrow">o nosso lugar</div>
+  <h2>O dólar que era dos grandes, <span class="lime">agora no bolso do CNPJ.</span></h2>
+  <p class="lead">A melhor tecnologia de dinheiro do mundo sempre foi privilégio de banco e de quem tinha acesso. A Vineland coloca ela na mão de quem trabalha, em português, sem jargão, sem virar engenheiro. Dólar de verdade, com proteção contra a própria moeda do país.</p>
+  <div class="num">05</div>
+</section>
+
+<!-- 06 · MERCADO -->
+<section class="slide dark">
+  <div class="eyebrow">mercado</div>
+  <h2>A janela é gigante e já abriu.</h2>
+  <div class="stat">
+    <div class="s"><div class="v">US$5tri</div><div class="l">pagamentos B2B cross-border em stablecoin até 2035 (Juniper)</div></div>
+    <div class="s"><div class="v">90%</div><div class="l">do volume cripto no Brasil já é stablecoin (Receita Federal)</div></div>
+    <div class="s"><div class="v">US$6,9bi</div><div class="l">em compras cripto no 1º tri/2026, lideradas por stablecoin (Banco Central)</div></div>
+  </div>
+  <div class="num">06</div>
+</section>
+
+<!-- 07 · DIFERENCIAÇÃO -->
+<section class="slide">
+  <div class="eyebrow">por que não é só mais um</div>
+  <h2>O único produto BR-first, em dólar, sobre trilho licenciado.</h2>
+  <div class="grid3">
+    <div class="cell"><div class="k">vs cartão / Stripe</div><div class="v" style="font-size:22px;line-height:1.25;margin-top:10px">Custódia e bloqueio. A Vineland é não-custodial e mais barata.</div></div>
+    <div class="cell"><div class="k">vs infra global (Bridge, Conduit)</div><div class="v" style="font-size:22px;line-height:1.25;margin-top:10px">APIs para devs, em inglês. A Vineland é produto, em português.</div></div>
+    <div class="cell"><div class="k">vs SDK de agente (Sardis, SpendControl)</div><div class="v" style="font-size:22px;line-height:1.25;margin-top:10px">Protocolo EVM para dev. A Vineland é produto pra quem não é dev.</div></div>
+  </div>
+  <div class="num">07</div>
+</section>
+
+<!-- 08 · SEGURANÇA / MOAT -->
+<section class="slide dark">
+  <div class="eyebrow">o moat</div>
+  <h2>Mesmo que o agente seja hackeado, <span class="lime">o dinheiro não se move.</span></h2>
+  <p class="lead">Quebrar agentes de IA é o que a gente faz. Conhecemos os ataques (prompt injection, abuso de ferramenta, memória corrompida) e desenhamos partindo do princípio de que o agente pode ser comprometido. A regra que protege o dinheiro vive no contrato, não na cabeça da IA.</p>
+  <div class="big">O cérebro pode ser enganado. O contrato não conversa.</div>
+  <div class="num">08</div>
+</section>
+
+<!-- 09 · REGULATÓRIO -->
+<section class="slide">
+  <div class="eyebrow">posição regulatória</div>
+  <h2>Construída para operar dentro da regra.</h2>
+  <ul>
+    <li><span class="b">·</span><span>Opera <b>sobre</b> um parceiro de câmbio licenciado (VASP). Não substitui licença.</span></li>
+    <li><span class="b">·</span><span>Não-custodial e auditável: reduz o risco de fraude do parceiro, em vez de aumentar.</span></li>
+    <li><span class="b">·</span><span>Alinhada à prioridade do BC de usar inovação para mitigar fraude e crime.</span></li>
+    <li><span class="b">·</span><span>Pagamento doméstico em real é do Pix. O nosso valor é o dólar e a automação auditável.</span></li>
+  </ul>
+  <div class="num">09</div>
+</section>
+
+<!-- 10 · TRAÇÃO -->
+<section class="slide">
+  <div class="eyebrow">tração · honesta</div>
+  <h2>Prova de tecnologia. Pré-receita.</h2>
+  <ul>
+    <li><span class="b">✓</span><span>Pagamentos reais executados on-chain, na rede principal.</span></li>
+    <li><span class="b">✓</span><span>Contratos públicos e verificáveis por qualquer pessoa.</span></li>
+    <li><span class="b">✓</span><span>Motores provados: cobrança recorrente com teto, checkout com taxa inescapável, recebimento cross-chain via CCTP.</span></li>
+    <li><span class="b">·</span><span>Sem clientes pagantes ainda. A próxima etapa é fechar os primeiros casos reais.</span></li>
+  </ul>
+  <div class="num">10</div>
+</section>
+
+<!-- 11 · MODELO & UNIT ECONOMICS -->
+<section class="slide">
+  <div class="eyebrow">modelo & unit economics</div>
+  <h2 style="font-size:clamp(28px,4.2vw,54px)">Pagar em dólar custava ~7%. A gente faz por ~1%.</h2>
+  <div class="grid3" style="margin-top:32px">
+    <div class="cell"><div class="k">como se paga hoje</div><div class="v">~7%</div><div class="d">cartão internacional: ~4% de spread + 3,5% de IOF. Ou wire bancário, com taxa fixa, banco correspondente e dias de espera</div></div>
+    <div class="cell"><div class="k">vineland</div><div class="v" style="color:var(--lime)">~1%</div><div class="d">taxa de plataforma por pagamento, em segundos, sem chargeback. O dólar entra por câmbio de parceiro licenciado</div></div>
+    <div class="cell"><div class="k">custo da rede (stellar)</div><div class="v">~0%</div><div class="d">frações de centavo por transação, liquidação em segundos</div></div>
+  </div>
+  <div style="margin-top:20px;font-size:13px;color:rgba(10,10,10,.45);max-width:60ch;line-height:1.5">O ~1% é a taxa da plataforma, no mesmo lugar que o Stripe cobra 3,99% no Brasil. O câmbio do funding em dólar corre pelo parceiro licenciado, à parte.</div>
+  <div style="margin-top:36px;font-family:'Space Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.22em;color:rgba(10,10,10,.4)">a conta que fecha</div>
+  <div style="margin-top:24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:34px 44px;max-width:1080px">
+    <div>
+      <div style="font-size:clamp(30px,3.8vw,48px);font-weight:600;letter-spacing:-.03em;line-height:1;white-space:nowrap">R$2,4M<span style="font-size:.4em;font-weight:500;color:rgba(10,10,10,.45)"> /ano</span></div>
+      <div style="font-size:16px;color:rgba(10,10,10,.6);line-height:1.4;margin-top:14px;max-width:26ch">100 clientes movendo R$200 mil por mês</div>
+    </div>
+    <div>
+      <div style="font-size:clamp(30px,3.8vw,48px);font-weight:600;letter-spacing:-.03em;line-height:1;white-space:nowrap">R$24M<span style="font-size:.4em;font-weight:500;color:rgba(10,10,10,.45)"> /ano</span></div>
+      <div style="font-size:16px;color:rgba(10,10,10,.6);line-height:1.4;margin-top:14px;max-width:26ch">1.000 clientes do mesmo porte</div>
+    </div>
+    <div>
+      <div style="font-size:clamp(30px,3.8vw,48px);font-weight:600;letter-spacing:-.03em;line-height:1;white-space:nowrap">R$20–100k<span style="font-size:.4em;font-weight:500;color:rgba(10,10,10,.45)"> /mês</span></div>
+      <div style="font-size:16px;color:rgba(10,10,10,.6);line-height:1.4;margin-top:14px;max-width:26ch">Um cliente enterprise (R$2 a 10M por mês)</div>
+    </div>
+  </div>
+  <div class="num">11</div>
+</section>
+
+<!-- 12 · ASK -->
+<section class="slide dark">
+  <div class="eyebrow">por que agora · o pedido</div>
+  <h2>A próxima camada de pagamentos não é bancária. <span class="lime">É programável.</span></h2>
+  <p class="lead">Stablecoins maduras, agentes de IA criando a necessidade de execução controlada, e a regulação brasileira finalmente definida. A janela está aberta, e o produto já existe e move dinheiro real.</p>
+  <a class="cta" href="mailto:manuel@bluewaveai.online">Falar com a gente</a>
+  <div class="num">12</div>
+</section>
+
+<div class="hint">↓ role ou use as setas</div>
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  let i=0;
+  function go(n){ i=Math.max(0,Math.min(slides.length-1,n)); slides[i].scrollIntoView({behavior:'smooth'}); }
+  addEventListener('keydown',e=>{
+    if(['ArrowDown','ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();go(i+1);}
+    if(['ArrowUp','ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();go(i-1);}
+  });
+  // track current slide on scroll
+  const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting)i=slides.indexOf(en.target);}),{threshold:.6});
+  slides.forEach(s=>io.observe(s));
+  setTimeout(()=>{const h=document.querySelector('.hint');if(h)h.style.transition='opacity 1s';},4000);
+  addEventListener('scroll',()=>{const h=document.querySelector('.hint');if(h)h.style.opacity='0';},{once:true});
+</script>
+</body>
+</html>

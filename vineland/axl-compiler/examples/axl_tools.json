@@ -1,0 +1,5 @@
+{
+  "read_context":  { "name": "read_context",  "description": "read principal context / history", "input_schema": { "type": "object", "properties": {}, "additionalProperties": false } },
+  "draft_counsel": { "name": "draft_counsel", "description": "draft strategic counsel",          "input_schema": { "type": "object", "properties": {}, "additionalProperties": false } },
+  "run_premortem": { "name": "run_premortem", "description": "adversarial pre-mortem analysis",   "input_schema": { "type": "object", "properties": {}, "additionalProperties": false } }
+}

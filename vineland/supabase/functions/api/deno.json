@@ -1,0 +1,16 @@
+{
+  "imports": {
+    "hono": "npm:hono@4.6.5",
+    "hono/cors": "npm:hono@4.6.5/cors",
+    "zod": "npm:zod@3.23.8",
+    "supabase": "npm:@supabase/supabase-js@2.45.4",
+    "@vineland/shared": "../../../packages/shared/src/index.ts"
+  },
+  "tasks": {
+    "test": "deno test --allow-all test/"
+  },
+  "compilerOptions": {
+    "lib": ["deno.window", "deno.unstable"],
+    "strict": true
+  }
+}

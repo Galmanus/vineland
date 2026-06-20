@@ -1,0 +1,275 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Premium type — DM Sans (display/body) + Space Mono (labels). */
+html, body { font-family: "DM Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
+
+/* Keyframes used by PolicyDemoAnimation (Tailwind arbitrary
+   `animate-[name_duration_easing]` references). */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse-fade {
+  0%, 100% { opacity: 0; }
+  50%      { opacity: 1; }
+}
+/* LiveLedger — streaming row enter + terminal caret blink. */
+@keyframes ledger-in {
+  from { opacity: 0; transform: translateY(-7px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes ledger-caret {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+/* PolicyDemoAnimation device — scan sweep + blocked shake + face-scan pulse. */
+@keyframes scan-sweep {
+  0%   { transform: translateY(-120%); opacity: 0; }
+  15%, 85% { opacity: 1; }
+  100% { transform: translateY(620%); opacity: 0; }
+}
+@keyframes dev-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-5px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+@keyframes face-scan {
+  0%, 100% { opacity: 0.25; transform: scaleY(0.6); }
+  50%      { opacity: 1; transform: scaleY(1); }
+}
+/* Hero ambient aurora — slow drift, not cursor-driven. */
+@keyframes aurora-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.75; }
+  50%      { transform: translate(7%, -5%) scale(1.18); opacity: 1; }
+}
+/* x402 ecosystem carousel — continuous marquee. Track holds 2 copies; -50%
+   loops seamlessly. Pause on hover so cards are readable/clickable. */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-track { animation: marquee 55s linear infinite; will-change: transform; }
+.marquee-wrap:hover .marquee-track { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } }
+
+/* ─────────────────────────────────────────────────────────────
+   UX motion layer — smooth, editorial, not gaudy. Desktop + mobile.
+   Every effect degrades to nothing under prefers-reduced-motion.
+   ───────────────────────────────────────────────────────────── */
+
+/* Smooth anchor scrolling (e.g. "Como funciona" → #proof). */
+html { scroll-behavior: smooth; }
+
+/* Premium easing token + the canonical 180ms interaction transition
+   (design-review dim. 6: 150–200ms ease). */
+:root {
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Tactile hover-lift for interactive surfaces (CTAs, cards, cells).
+   GPU-friendly: only transform + box-shadow animate. The hover shadow is the
+   brand GOLD (not black) — the single warm signal — and the press is snappy. */
+.lift {
+  transition: transform 260ms var(--ease-spring),
+              box-shadow 260ms var(--ease-out-expo),
+              background-color 180ms ease, color 180ms ease, opacity 180ms ease;
+  will-change: transform;
+}
+.lift:hover { transform: translateY(-3px) scale(1.015); box-shadow: 0 14px 30px -10px rgba(253, 218, 36, 0.30); }
+.lift:active { transform: translateY(-1px) scale(0.985); transition-duration: 90ms; }
+
+/* Bar fill — dramatize "it grows" with scaleX (transform, never width).
+   Fail-safe: only collapse once JS marks .js-reveal, so no-JS users see full bars. */
+.bar-fill { transform-origin: left; transition: transform 1100ms var(--ease-out-expo); }
+.js-reveal .bar-fill { transform: scaleX(0); }
+.js-reveal [data-reveal].reveal-in .bar-fill { transform: scaleX(1); }
+
+/* Cursor spotlight — a whisper of gold that follows the pointer on a card.
+   Low alpha on BONE: premium, never gaudy. Pure CSS vars, zero JS lib. */
+.spotlight { position: relative; }
+.spotlight::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: radial-gradient(220px circle at var(--mx, 50%) var(--my, 50%), rgba(253, 218, 36, 0.07), transparent 45%);
+  opacity: 0; transition: opacity 300ms ease;
+}
+.spotlight:hover::before { opacity: 1; }
+
+/* Global reduced-motion net — belt and suspenders over the per-element rules. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  .bar-fill { transform: scaleX(1); }
+}
+
+/* Scroll-reveal — fail-safe: only hidden once JS marks the root .js-reveal,
+   so no-JS / failed-observer users always see content. */
+.js-reveal [data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity 820ms var(--ease-out-expo), transform 820ms var(--ease-out-expo); }
+.js-reveal [data-reveal].reveal-in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .js-reveal [data-reveal] { opacity: 1; transform: none; transition: none; } }
+
+/* Hero copy — smooth fade-up entrance on load. */
+@keyframes heroIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+.hero-in { animation: heroIn 900ms var(--ease-out-expo) both; }
+@media (prefers-reduced-motion: reduce) { .hero-in { animation: none; } }
+
+/* Scroll progress bar (top). */
+.scroll-progress { position: fixed; top: 0; left: 0; height: 2px; background: #A16207; width: 0; z-index: 60; will-change: width; }
+
+/* Headline mask-rise — lines wipe up into view (editorial reveal). */
+@keyframes maskUp { from { transform: translateY(115%); } to { transform: translateY(0); } }
+.mask-clip { display: block; overflow: hidden; padding-bottom: 0.06em; }
+.mask-up { display: block; animation: maskUp 1100ms var(--ease-out-expo) both; }
+@media (prefers-reduced-motion: reduce) { .mask-up { animation: none; transform: none; } }
+/* Word-by-word variant: each word masks individually, inline. */
+h1 .mask-clip { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.08em; }
+h1 .mask-up { display: inline-block; }
+
+/* Animated nav underline. */
+.navlink { position: relative; }
+.navlink::after { content: ""; position: absolute; left: 0; bottom: -4px; height: 1px; width: 100%; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform 320ms var(--ease-out-expo); }
+.navlink:hover::after { transform: scaleX(1); transform-origin: left; }
+
+/* Bold marquee band (Yeezy ticker). */
+@keyframes slip-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.slip-marquee-track { display: inline-flex; white-space: nowrap; animation: slip-marquee 38s linear infinite; will-change: transform; }
+@media (prefers-reduced-motion: reduce) { .slip-marquee-track { animation: none; } }
+
+/* Hero image — slow Ken Burns drift (free "living hero", no video gen). */
+@keyframes kenburns { 0% { transform: scale(1.04); } 100% { transform: scale(1.09); } }
+.kenburns { animation: kenburns 30s ease-in-out infinite alternate; will-change: transform; }
+@media (prefers-reduced-motion: reduce) { .kenburns { animation: none; transform: scale(1.04); } }
+
+/* PayFlowDemo (landing payment animation). */
+@keyframes pf-sweep { 0%, 100% { top: 4%; } 50% { top: 92%; } }
+@keyframes pf-spin { to { transform: rotate(360deg); } }
+@keyframes pf-pop { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* — cinematic upgrade — */
+/* device floats + a hair of perspective tilt */
+@keyframes pf-bob {
+  0%, 100% { transform: translateY(0) rotateX(0deg) rotateY(0deg); }
+  50%      { transform: translateY(-12px) rotateX(1.5deg) rotateY(-2deg); }
+}
+/* diagonal screen glare sweeping slowly across the glass */
+@keyframes pf-glare {
+  0%   { transform: translateX(-130%) skewX(-18deg); opacity: 0; }
+  18%  { opacity: 0.55; }
+  42%  { opacity: 0; }
+  100% { transform: translateX(230%) skewX(-18deg); opacity: 0; }
+}
+/* ambient lime stage glow — gentle, brighter handled per-phase via opacity */
+@keyframes pf-glow { 0%,100% { transform: scale(1); opacity: .55; } 50% { transform: scale(1.12); opacity: .85; } }
+/* QR corner brackets breathing */
+@keyframes pf-bracket { 0%,100% { opacity: .45; transform: scale(0.96); } 50% { opacity: 1; transform: scale(1); } }
+/* Face ID concentric pulse rings */
+@keyframes pf-ring { 0% { transform: scale(0.6); opacity: .7; } 100% { transform: scale(1.9); opacity: 0; } }
+/* Face ID scan bar travelling over the dot mesh */
+@keyframes pf-mesh { 0%,100% { transform: translateY(-42px); opacity: 0; } 10%,90% { opacity: 1; } 50% { transform: translateY(42px); } }
+/* success ring burst on paid */
+@keyframes pf-burst { 0% { transform: scale(0.3); opacity: .8; } 100% { transform: scale(2.4); opacity: 0; } }
+/* checkmark stroke draw-in */
+@keyframes pf-draw { to { stroke-dashoffset: 0; } }
+/* soft rise for paid text */
+@keyframes pf-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Editorial range slider — square thumb, ink on a thin track. No rounding. */
+.slip-range { -webkit-appearance: none; appearance: none; height: 2px; background: rgba(10,10,10,0.18); cursor: pointer; }
+.slip-range:focus { outline: none; }
+.slip-range::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 16px; height: 16px; background: #0a0a0a; border: 0; border-radius: 0;
+  transition: transform 140ms var(--ease-out-expo);
+}
+.slip-range:hover::-webkit-slider-thumb,
+.slip-range:active::-webkit-slider-thumb { transform: scale(1.25); }
+.slip-range::-moz-range-thumb { width: 16px; height: 16px; background: #0a0a0a; border: 0; border-radius: 0; }
+.slip-range::-moz-range-track { height: 2px; background: rgba(10,10,10,0.18); }
+
+/* Mobile menu entrance — slide+fade from the right, smooth. */
+@keyframes menu-in {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.menu-in { animation: menu-in 320ms var(--ease-out-expo) both; }
+
+/* Staggered children for menu items reading in one after another. */
+.menu-stagger > * { animation: menu-in 380ms var(--ease-out-expo) both; }
+.menu-stagger > *:nth-child(1) { animation-delay: 40ms; }
+.menu-stagger > *:nth-child(2) { animation-delay: 90ms; }
+.menu-stagger > *:nth-child(3) { animation-delay: 140ms; }
+.menu-stagger > *:nth-child(4) { animation-delay: 190ms; }
+.menu-stagger > *:nth-child(5) { animation-delay: 240ms; }
+.menu-stagger > *:nth-child(6) { animation-delay: 290ms; }
+
+/* Global accessibility guard — kill all motion when the user asks. This is
+   the catch-all the Reveal/aurora/scan animations previously lacked. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* "Rounded" by Igor Stepanchenko — display only (no accents/$); used on the wordmark. */
+@font-face { font-family: 'Rounded'; src: url('/fonts/Rounded.woff') format('woff'), url('/fonts/Rounded.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+
+/* ─────────────────────────────────────────────────────────────
+   Hero cofrinho — coins dropping in, piggy breathing, ambient
+   yellow glow, living grain. All auto-killed by the reduced-motion
+   catch-all above (it uses *!important).
+   ───────────────────────────────────────────────────────────── */
+/* Coins fall from above into the slot, then vanish (swallowed). Drawn at
+   cy 30/20; slot sits at y60–72, so +36 user-units lands them in it. */
+/* Coins are drawn at the slot's mouth (cy 30); they start high, fall with
+   gravity (ease-in), reach the slot (+32 → y62) and fade — swallowed in. */
+@keyframes coin-drop {
+  0%        { transform: translateY(-52px); opacity: 0; }
+  16%       { opacity: 1; }
+  64%       { transform: translateY(32px); opacity: 1; }
+  78%, 100% { transform: translateY(34px); opacity: 0; }
+}
+.coin { transform-box: fill-box; transform-origin: center; }
+.coin-1 { animation: coin-drop 4s ease-in infinite 0s; }
+.coin-2 { animation: coin-drop 4s ease-in infinite 0.7s; }
+.coin-3 { animation: coin-drop 4s ease-in infinite 1.4s; }
+.coin-4 { animation: coin-drop 4s ease-in infinite 2.0s; }
+.coin-5 { animation: coin-drop 4s ease-in infinite 2.7s; }
+.coin-6 { animation: coin-drop 4s ease-in infinite 3.3s; }
+/* Piggy breathes — subtle scale from its centre of mass. */
+@keyframes pig-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.022); } }
+.pig-breathe { transform-box: fill-box; transform-origin: 50% 60%; animation: pig-breathe 4.6s ease-in-out infinite; will-change: transform; }
+/* Piggy rocks on its feet — playful bob + tilt. */
+/* Butt wag — pivot at the FRONT (head/front legs) so the rear sweeps a big arc.
+   Pure symmetric pendulum + ease-in-out = buttery smooth, no jitter. */
+@keyframes pig-wiggle {
+  0%, 100% { transform: rotate(-4deg); }
+  50%      { transform: rotate(4deg); }
+}
+.pig-wiggle { transform-box: fill-box; transform-origin: 24% 78%; animation: pig-wiggle 4.2s cubic-bezier(0.45, 0, 0.55, 1) infinite; will-change: transform; }
+/* Pure-gold specular sweep — a light streak travels across the body, pauses,
+   repeats (like light catching polished metal). */
+@keyframes gold-shine {
+  0%        { transform: translateX(-70px) skewX(-16deg); }
+  45%, 100% { transform: translateX(290px) skewX(-16deg); }
+}
+.gold-shine { animation: gold-shine 4.2s ease-in-out infinite; will-change: transform; }
+/* Soft gold glint on a coin/edge — twinkle. */
+@keyframes gold-twinkle { 0%, 100% { opacity: 0; } 50% { opacity: 0.9; } }
+.gold-twinkle { animation: gold-twinkle 2.6s ease-in-out infinite; }
+/* Comparison carousel — competitor column swaps in with a quick fade+slide. */
+@keyframes cmp-swap { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: none; } }
+.cmp-swap { animation: cmp-swap 380ms var(--ease-out-expo) both; }
+/* Ambient yellow glow behind the piggy, slow pulse. */
+@keyframes glow-pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.14); opacity: 0.8; } }
+.hero-glow { animation: glow-pulse 6s ease-in-out infinite; will-change: transform, opacity; }
+/* Living grain — barely-there shimmer over the dot texture. */
+@keyframes grain-drift { 0%, 100% { background-position: 0 0; } 50% { background-position: 1.5px 1.5px; } }
+.grain { animation: grain-drift 8s ease-in-out infinite; }

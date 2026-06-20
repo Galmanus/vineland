@@ -1,0 +1,11 @@
+{
+  "name": "@vineland/shopify-connector",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Vineland × Shopify Payments App connector (maps Shopify payment sessions onto Vineland's API).",
+  "scripts": {
+    "dev": "node src/index.mjs",
+    "start": "node src/index.mjs"
+  }
+}

@@ -1,0 +1,18 @@
+[toolchain]
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.devnet]
+vineland_mandate = "CmDKY8MxCWkCN9etSeKApHKnGuTKK6vn7qzhTkAtM9Bv"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "localnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "yarn run mocha --require tsx/cjs --extension ts -t 1000000 tests/**/*.ts"

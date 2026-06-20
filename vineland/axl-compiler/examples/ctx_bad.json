@@ -1,0 +1,4 @@
+{
+  "decision": { "amount": 999, "recipient": "GEVIL" },
+  "account":  { "balance": 50, "allowlist": ["GA"] }
+}

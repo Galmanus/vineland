@@ -1,0 +1,27 @@
+{
+  "2b1b2bc2-d1e8-4ab2-8f43-c8c42d007672": {
+    "perPaymentCapUsd": "50.00",
+    "monthlyCapUsd": "200.00",
+    "payoutIdentity": "GCYEAQWXDR3MXHU364KIFOLSL2FIZL5RYXEKO3QVQ3WTQCWY64BXBRNR"
+  },
+  "828dd793-eef7-4b57-80a4-ae768dba67e3": {
+    "perPaymentCapUsd": "50.00",
+    "monthlyCapUsd": "200.00",
+    "payoutIdentity": "828dd793-eef7-4b57-80a4-ae768dba67e3"
+  },
+  "e43a6ffd-0cd7-4102-beeb-80db6bbe1ddc": {
+    "perPaymentCapUsd": "50.00",
+    "monthlyCapUsd": "200.00",
+    "payoutIdentity": "GDCJ5VBKPOSZM74FWK6CELWZYZN7BRXWRHRMOIP2GJKLC5XVFG5VCV7T"
+  },
+  "a0acee25-7ca2-4327-8430-599a514c89f5": {
+    "perPaymentCapUsd": "50.00",
+    "monthlyCapUsd": "200.00",
+    "payoutIdentity": "GATNDF42REGC4JXDMCT2KZ5IIQRRIOX54M6G4VWKRKAHORFAEQA2NL6N"
+  },
+  "1e6277bf-43f4-492d-9b52-5237d8e917ff": {
+    "perPaymentCapUsd": "50.00",
+    "monthlyCapUsd": "200.00",
+    "payoutIdentity": "GATNDF42REGC4JXDMCT2KZ5IIQRRIOX54M6G4VWKRKAHORFAEQA2NL6N"
+  }
+}

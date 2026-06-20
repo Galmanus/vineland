@@ -1,0 +1,27 @@
+# Proving environment for Vineland Confidential Compliance.
+# Pinned to the toolchain the UltraHonk Soroban verifier expects:
+#   noir 1.0.0-beta.9  +  bb (barretenberg) v0.87.0
+# Built on ubuntu:24.04 because bb v0.87.0 links against GLIBC_2.38,
+# which the host (Ubuntu 22.04 / glibc 2.35) does not provide.
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y \
+    curl git bash build-essential ca-certificates jq \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV PATH="/root/.nargo/bin:/root/.bb/bin:${PATH}"
+
+# noir (nargo) pinned
+RUN curl -L https://raw.githubusercontent.com/noir-lang/noirup/main/install | bash \
+    && /root/.nargo/bin/noirup -v 1.0.0-beta.9
+
+# bb v0.87.0 pinned (needs glibc 2.38 -> present on 24.04)
+RUN mkdir -p /root/.bb/bin \
+    && curl -L https://github.com/AztecProtocol/aztec-packages/releases/download/v0.87.0/barretenberg-amd64-linux.tar.gz -o /tmp/bb.tar.gz \
+    && tar -xzf /tmp/bb.tar.gz -C /root/.bb/bin \
+    && chmod +x /root/.bb/bin/bb \
+    && rm /tmp/bb.tar.gz
+
+WORKDIR /work
+CMD ["bash"]

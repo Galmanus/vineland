@@ -1,0 +1,331 @@
+{
+  "summary": "Deep research harness — fan-out web searches, fetch sources, adversarially verify claims, synthesize a cited report.",
+  "agentCount": 106,
+  "logs": [
+    "Q: US military / DARPA / NSA / Naval Research Lab public-domain (open / declassifie…",
+    "Decomposed into 6 angles: formal-verification + capability security (axlc prover layer), zero-knowledge proof systems (payment-proof layer), Byzantine fault tolerance + Stellar consensus (rail/consensus layer), onion routing privacy (NRL) + authenticated timing, post-quantum crypto NSA CNSA 2.0 (auth/signature layer), MoneyGram Access Stellar USDC on/off-ramp (commercial rail)",
+    "zero-knowledge proof systems (payment-proof layer): 6 results",
+    "formal-verification + capability security (axlc prover layer): 6 results",
+    "formal-verification + capability security (axlc prover layer): 4 novel (2 filtered)",
+    "Byzantine fault tolerance + Stellar consensus (rail/consensus layer): 6 results",
+    "Byzantine fault tolerance + Stellar consensus (rail/consensus layer): 5 novel (1 filtered)",
+    "onion routing privacy (NRL) + authenticated timing: 6 results",
+    "onion routing privacy (NRL) + authenticated timing: 4 novel (2 filtered)",
+    "post-quantum crypto NSA CNSA 2.0 (auth/signature layer): 6 results",
+    "post-quantum crypto NSA CNSA 2.0 (auth/signature layer): 3 novel (3 filtered)",
+    "MoneyGram Access Stellar USDC on/off-ramp (commercial rail): 6 results",
+    "MoneyGram Access Stellar USDC on/off-ramp (commercial rail): 1 novel (5 filtered)",
+    "Fetched 23 sources → 102 claims → verifying top 25",
+    "\"The seL4 microkernel (~10K LOC C, ~480K lines of I…\": 3-0 ✓",
+    "\"HACMS demonstrated that even an attacker with root…\": 3-0 ✓",
+    "\"seL4 provides capability-based authorization primi…\": 3-0 ✓",
+    "\"MoneyGram Access on Stellar lets a wallet/applicat…\": 3-0 ✓",
+    "\"The page does not disclose fees, settlement speed,…\": 1-2 ✗",
+    "\"SIEVE IR is publicly usable: it is licensed CC-BY-…\": 3-0 ✓",
+    "\"SIEVE IR is a DARPA-program joint deliverable (SIE…\": 3-0 ✓",
+    "\"SIEVE IR is a vendor-neutral intermediate represen…\": 3-0 ✓",
+    "\"WizToolKit is MIT-licensed and approved for public…\": 3-0 ✓",
+    "\"WizToolKit operates on the SIEVE IR (a standardize…\": 3-0 ✓",
+    "\"ZK-SecreC is a zero-knowledge-proof DSL developed …\": 3-0 ✓",
+    "\"ZK-SecreC is open source under BSD-3-Clause, which…\": 3-0 ✓",
+    "\"DARPA's SIEVE program explicitly targets post-quan…\": 3-0 ✓",
+    "\"SIEVE's stated goal is verifying capabilities with…\": 0-3 ✗",
+    "\"emp-zk is an Apache-2.0-licensed open-source libra…\": 3-0 ✓",
+    "\"emp-zk is interactive (prover and verifier must be…\": 3-0 ✓",
+    "\"ZK-SecreC is an open-source ZKP toolkit developed …\": 3-0 ✓",
+    "\"With oral (unauthenticated) messages, the Byzantin…\": 2-1 ✓",
+    "\"No solution with fewer than 3m+1 generals can cope…\": 3-0 ✓",
+    "\"With unforgeable signed/written messages, the Byza…\": 3-0 ✓",
+    "\"Stellar's Federated Byzantine Agreement (FBA / SCP…\": 2-1 ✓",
+    "\"As of Jan 2019 the entire Stellar network halts (c…\": 2-1 ✓",
+    "\"The two validator nodes whose failure halts the wh…\": 0-3 ✗",
+    "\"In federated Byzantine agreement (FBA) systems lik…\": 3-0 ✓",
+    "\"Stellar deliberately prioritizes safety over liven…\": 3-0 ✓",
+    "Verify done: 25 claims → 22 confirmed, 3 killed"
+  ],
+  "result": {
+    "question": "US military / DARPA / NSA / Naval Research Lab public-domain (open / declassified / openly published) technology that could be technically integrated into Vineland — a PIX↔Stellar agent-payment rail whose wedge is provably-bounded autonomous agent payments (passkey auth, Stellar smart contracts, Rust axlc with SMT prove/bind/constrain/invariant, recipient-redirection guard). Focus on: formal verification (seL4/HACMS), zero-knowledge proof systems (SIEVE), capability-based security, Byzantine fault tolerance, onion routing/privacy (NRL), post-quantum crypto (NSA CNSA 2.0), authenticated timing. For each: what it is, license/availability, concrete integration point in Vineland, and disanalogy/failure mode. Also analyze moneygram.com (MoneyGram Access = Stellar USDC cash on/off-ramp) as a rail relevant to Vineland.",
+    "summary": "US-defense-origin public-domain technology offers Vineland several concretely integrable building blocks, strongest in the two pillars that already match its wedge: formal-verification isolation (seL4/HACMS) and DARPA-funded zero-knowledge proof tooling (SIEVE program: SIEVE IR, WizToolKit, ZK-SecreC, plus emp-zk). seL4 is the most directly usable asset — an open-source (GPLv2), functional-correctness-proven microkernel whose capability model and live red-team-survived isolation (HACMS: root in a Linux partition could not break out or disrupt flight-critical functions) validate sandboxing an autonomous payment agent. The ZK layer is integrable at the IR/proof-tooling level (SIEVE IR is CC-BY-4.0 / Distribution Statement A, WizToolKit MIT, ZK-SecreC BSD-3-Clause, emp-zk Apache-2.0 — all permissive, no copyleft, no license-level export bar), but every candidate carries the same disanalogy: these tools are interactive or circuit/SMT-impedance-mismatched and have no native Stellar Soroban verifier, so on-chain bounded-payment attestation needs a non-interactive SNARK/STARK backend that none of them ship turnkey. Byzantine-fault-tolerance theory (Lamport 1982) directly grounds Vineland's signature-based design — unforgeable signed messages solve Byzantine agreement for any number of traitors, beating quorum-size-alone — while peer-reviewed analysis flags Stellar's FBA/SCP as the rail's load-bearing liveness risk (safety prioritized over liveness by design; halts rather than double-spends). MoneyGram Access on Stellar is confirmed as a real cash<->USDC on/off-ramp requiring no bank account via a single (allowlisted) integration, directly relevant to Vineland's PIX<->Stellar rail. The research question's filters for capability-based security, BFT, and post-quantum ZK are all satisfied with primary sources; onion routing (NRL Tor), NSA CNSA 2.0 PQC specifics, and authenticated timing were not independently substantiated in the surviving claims.",
+    "findings": [
+      {
+        "claim": "seL4 is an open-source (GPLv2), functional-correctness-proven microkernel (~10-12K LOC C, ~480-500K lines Isabelle/HOL proof) usable as a verified isolation kernel for an agent-payment runtime, and it provides capability-based authorization primitives that validate Vineland's axlc capability model as a proven, shipped mechanism.",
+        "confidence": "high",
+        "vote": "3-0 (merged from two 3-0 claims)",
+        "sources": [
+          "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5597724/",
+          "https://sel4.systems",
+          "ACM SOSP 2009 Klein et al."
+        ],
+        "evidence": "PMC5597724 quote: 'The seL4 microkernel is available with an open-source licence' and 'seL4 provides virtual address spaces, threads, IPC, a memory management model and capabilities to manage authorizations.' First general-purpose OS kernel with machine-checked functional-correctness proof; GPLv2 (kernel+proofs), BSD-2 (libs). Integration point: run the autonomous payment agent inside a verified seL4 partition for proven spatial isolation. Disanalogy/failure mode: seL4 capabilities are OS-kernel runtime memory/IPC authorization; Vineland's axlc bind/constrain/invariant is contract-level SMT-proven payment bounds — different layer, different proof discipline. Proofs hold only under stated assumptions (C semantics, compiler/hardware model, correct MMU/DMA config) and verified Arm/RISC-V configs."
+      },
+      {
+        "claim": "HACMS demonstrated formal-verification-based isolation holds under live red-team attack — an attacker with root on a Linux partition could not break out or disrupt flight-critical functionality — providing a directly relevant guarantee for sandboxing an autonomous payment agent.",
+        "confidence": "high",
+        "vote": "3-0",
+        "sources": [
+          "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5597724/"
+        ],
+        "evidence": "Verbatim from Fisher et al. (Phil. Trans. R. Soc. A 375:20150401, 2017): 'even with root access to the Linux partition, they were unable to break out of their partition or disrupt the operation of the vehicles in any way.' In-flight attack destroyed the unprotected vision app but left all flight-critical functionality unaffected; containment from seL4's verified non-interference. Corroborated by DARPA case study, Quanta (2016), DEF CON 'steal this Drone' 2021. Integration point: empirical precedent that a compromised non-critical component (agent logic) can be isolated from the payment-critical path. Failure mode: guarantee derives from seL4 spatial separation plus partitioning architecture — porting it to Vineland requires actually running on seL4, not merely citing the result."
+      },
+      {
+        "claim": "MoneyGram Access on Stellar lets a wallet/application convert physical cash to and from USDC on Stellar without a bank account via a single integration — a directly relevant on/off-ramp for Vineland's PIX<->Stellar rail.",
+        "confidence": "high",
+        "vote": "3-0",
+        "sources": [
+          "https://stellar.org/products-and-tools/moneygram",
+          "https://developer.moneygram.com",
+          "https://developers.stellar.org/docs/tools/ramps/moneygram"
+        ],
+        "evidence": "Stellar product page: 'convert their physical cash into digital dollars and back ... Deposit or withdraw cash from their digital wallets via Stellar USDC' without a bank account, 'One integration, multiple benefits.' Corroborated by MoneyGram developer portal (MoneyGram Ramps cash-in/cash-out USDC) and Fortune 2023. Integration point: cash leg complementing PIX as a fiat on/off-ramp on the same Stellar settlement layer. Caveat/failure mode: 'single integration' requires MoneyGram to allowlist the wallet domain plus an onboarding process — operational friction, not turnkey. Refuted sub-claim: a 1-2 vote rejected the assertion that the page discloses no fees/speed/API/agent-payment support, so those specifics remain unverified from this source."
+      },
+      {
+        "claim": "SIEVE IR is DARPA-origin (SIEVE = Securing Information for Encrypted Verification and Evaluation) public-domain ZK tech: CC-BY-4.0 + Distribution Statement A, a vendor-neutral circuit IR bridging ZK frontends (TA1) and proof backends (TA2) — a candidate payment-proof IR layer for Vineland's bounded-payment guard.",
+        "confidence": "high",
+        "vote": "3-0 (merged from three 3-0 claims)",
+        "sources": [
+          "https://github.com/sieve-zk/ir",
+          "https://www.darpa.mil/research/programs/securing-information-for-encrypted-verification-and-evaluation",
+          "https://galois.com/project/sieve"
+        ],
+        "evidence": "Repo (verified via GitHub API: license.spdx_id=CC-BY-4.0; readme.adoc contains 'Distribution Statement A: Approved for Public Release, Distribution Unlimited'): 'a joint deliverable of all performers on the DARPA SIEVE Program ... developed under DARPA contracts HR001120C0087, HR001120C0086, HR001120C0085 and Agreement HR00112020021.' README: 'a bridge between the program's human-facing frontends (TA1) and Zero Knowledge Proof Systems (TA2). It represents ZK statements using circuits.' CC-BY-4.0 permits commercial use with attribution only. Integration point: IR layer to encode axlc bound-payment constraints as circuits. Disanalogy/failure mode: SIEVE IR is a format SPECIFICATION, not a turnkey on-chain verifier; Stellar Soroban has no native SIEVE verifier, so a real integration needs a backend producing a Stellar-compatible proof artifact. Refuted: a 0-3 vote rejected the framing that SIEVE's privacy goal is structurally identical to Vineland proving bound/constrain/invariant without exposing transaction internals."
+      },
+      {
+        "claim": "WizToolKit (MIT, Distribution Statement A) operates on the SIEVE IR with a C++ API to parse/interpret/convert ZK statements — a candidate circuit/IR layer between Vineland's axlc bound-payment constraints and a backend ZK prover.",
+        "confidence": "high",
+        "vote": "3-0 (merged from two 3-0 claims)",
+        "sources": [
+          "https://github.com/stealthsoftwareinc/wiztoolkit"
+        ],
+        "evidence": "license.md is unmodified MIT (Stealth Software Technologies, 2020-2022); repo states 'Approved for Public Release, Distribution Unlimited' (DARPA Contract HR001120C0087). README: 'a collection of tools, provided by team Wizkit, for working with the SIEVE IR ... an extensive C++ API for manipulating the SIEVE IR.' Tools: wtk-firealarm (interpret), wtk-press (convert). MIT permits commercial use/sublicense/sell with attribution only. Failure mode: axlc emits SMT-LIB constraints; SIEVE IR is an arithmetic/boolean-circuit model — translating SMT semantics to SIEVE circuits is non-trivial engineering, and Stellar contracts do not natively verify SIEVE-derived proofs. Caveat: Distribution Statement A is a DoD public-release authorization, not an EAR/ITAR export determination."
+      },
+      {
+        "claim": "ZK-SecreC is a DARPA-SIEVE-funded (Cybernetica AS, contract HR0011-20-C-0083), BSD-3-Clause open-source ZKP DSL/toolkit on GitHub — a permissive, no-copyleft DARPA-origin asset integrable into Vineland's payment-proof layer without source-disclosure obligations.",
+        "confidence": "high",
+        "vote": "3-0 (merged from three claims: two 3-0 plus one 3-0)",
+        "sources": [
+          "https://github.com/zk-secrec/",
+          "https://cyber.ee/resources/news/zkp-in-e-governance-released/",
+          "https://arxiv.org/abs/2203.15448"
+        ],
+        "evidence": "GitHub README + Cybernetica press release: 'developed under the DARPA SIEVE research program (contract HR0011-20-C-0083) ... Cybernetica has published the source code on Github.' Raw LICENSE = standard BSD-3-Clause ('Copyright 2024 Cybernetica AS'), no dual-license/research clause. arXiv 2203.15448 confirms it is a ZK-proof DSL. BSD-3-Clause imposes only notice-retention/no-endorsement, no copyleft/source-disclosure. Integration: process/FFI boundary (CLI/proof-generation service), since the compiler is Haskell, not in-process linking with Rust axlc. Failure mode: Cybernetica's own framing notes ZK-SecreC targets proofs LARGER than typical blockchain/Web3 use — friction against a Stellar/Rust payment rail; non-trivial, not plug-and-play. Note: a misleading hit about LGPL/dual-license refers to the DIFFERENT older Sharemind 'SecreC', not ZK-SecreC."
+      },
+      {
+        "claim": "emp-zk (Apache-2.0) implements VOLE-based INTERACTIVE zero-knowledge proofs (Wolverine/Quicksilver/Mystique) for Boolean/arithmetic circuits, polynomials, and RAM — but its interactivity (designated-verifier, both parties online) is a structural mismatch for on-chain Stellar verification, which requires a non-interactive SNARK/STARK instead.",
+        "confidence": "high",
+        "vote": "3-0 (merged from two 3-0 claims)",
+        "sources": [
+          "https://github.com/emp-toolkit/emp-zk",
+          "https://eprint.iacr.org/2023/857",
+          "https://arxiv.org/abs/2502.07063"
+        ],
+        "evidence": "Repo titled 'Efficient and Interactive Zero-Knowledge Proofs', Apache-2.0, VOLE-based (cope/lpn/base_svole/vole_triple). IACR SoK 2023/857 and 2025 survey confirm VOLE-based ZK is inherently designated-verifier and interactive: verifier holds secret Delta, proof is not a transferable object. A Stellar Soroban contract is deterministic, publicly-reproducible, has no private state and no live two-party socket session — cannot hold a hidden Delta nor run interactive rounds, so on-chain verification requires a non-interactive publicly-verifiable system (Fiat-Shamir SNARK / transparent STARK). Failure mode: this is the recurring blocker for the whole ZK cluster — none of SIEVE IR, WizToolKit, ZK-SecreC, emp-zk ship a turnkey Stellar-verifiable non-interactive proof. emp-zk is also C++, not Rust like axlc."
+      },
+      {
+        "claim": "DARPA's SIEVE program explicitly targets post-quantum zero-knowledge proof techniques and reducing their asymptotic complexity — relevant to a Vineland payment-proof layer that must survive the same CNSA 2.0 post-quantum horizon.",
+        "confidence": "high",
+        "vote": "3-0",
+        "sources": [
+          "https://www.darpa.mil/research/programs/securing-information-for-encrypted-verification-and-evaluation",
+          "https://www.galois.com/articles/advancing-the-state-of-the-art-in-zero-knowledge-proofs-sieve-wrap-up"
+        ],
+        "evidence": "DARPA page: SIEVE 'will focus on substantially decreasing the asymptotic complexity of post-quantum ZK proof techniques' (ZK proofs relying on post-quantum hardness assumptions and/or reasoning about post-quantum cryptography statements). Three technical areas: constructing ZK statements, efficient ZK proof compilers, post-quantum ZK. Galois completed SIEVE in 2024 with documented orders-of-magnitude ZKP performance gains. Caveat: the CNSA 2.0 relevance bridge is the researcher's inference, not a DARPA assertion — though defensible; SIEVE does not itself name CNSA 2.0. The research question's separate NSA CNSA 2.0 specifics were not independently substantiated by a surviving claim."
+      },
+      {
+        "claim": "Byzantine-fault-tolerance theory (Lamport-Shostak-Pease 1982) grounds Vineland's signature-based design: with unforgeable signed messages the problem is solvable for any number of traitors (Algorithm SM(m)), beating quorum-size-alone; whereas unsigned/oral messages require >2/3 loyal generals and no fewer than 3m+1 nodes to tolerate m faults.",
+        "confidence": "high",
+        "vote": "3-0 for the signed-message and 3m+1 results; 2-1 for the oral-message iff-2/3 result (merged from three claims)",
+        "sources": [
+          "https://lamport.azurewebsites.net/pubs/byz.pdf"
+        ],
+        "evidence": "Verbatim: 'With unforgeable written messages, the problem is solvable for any number of generals and possible traitors' (Theorem 2: for any m, Algorithm SM(m) solves it with at most m traitors); 'no solution with fewer than 3m+1 generals can cope with m traitors' (oral model); 'using only oral messages, this problem is solvable if and only if more than two-thirds of the generals are loyal.' Application: Vineland's passkey auth + signed Stellar transactions match the signed-message regime, which relaxes the quorum lower bound. Caveat: signatures still require synchrony assumptions (A1-A3 timeout-based missing-message detection) and genuinely unforgeable signatures (A4); SCP uses federated quorum slices, not a uniform >2/3 threshold, so the oral bound is illustrative, not a literal SCP safety threshold."
+      },
+      {
+        "claim": "Stellar's FBA/SCP is the rail's load-bearing liveness risk: it is not superior to PBFT in safety/liveness (fault-tolerance fraction x in [0, 100/3]%, always <= PBFT's), the safety/liveness tradeoff cannot both be maximized beyond PBFT, and Stellar deliberately prioritizes safety (no double-spend) over liveness (accepts halts).",
+        "confidence": "high",
+        "vote": "3-0 for the design-tradeoff and safety-priority claims; 2-1 for the quantitative x<=PBFT and 2019 two-node-halt claims (merged from four claims)",
+        "sources": [
+          "https://arxiv.org/pdf/1904.13302",
+          "https://www.scs.stanford.edu/~dm/blog/safety-vs-liveness.html",
+          "https://messari.io"
+        ],
+        "evidence": "Mazieres (SCP author): 'if an FBA system's safety has more fault-tolerance than PBFT, then the FBA system's liveness will have less fault-tolerance' and 'the consequences of a safety failure (double-spent digital money) are far worse than those of a liveness failure.' arXiv 1904.13302 (peer/academic): x ranges 0 to 100/3, always <= PBFT, depends on quorum-slice structure; as of Jan 2019 the network halted if 2 specific SDF validators failed (x ~= 4.5%, f=2 of 44 active). Time-sensitivity: the 2019 two-node figure is STALE — per Messari Q1 2026, Stellar now has ~87 active validators and 7 Tier-1 orgs (21 validators), halt threshold measured in organizations (3 of 7 Tier-1 down halts it). Qualitative liveness-vs-decentralization risk persists for any Stellar rail like Vineland. Refuted: a 0-3 vote rejected the stronger 'single org single point of failure' framing as overreach."
+      }
+    ],
+    "caveats": "Time-sensitivity: the Stellar fault-tolerance figures from arXiv 1904.13302 are a January 2019 snapshot (44 active validators, 2-node halt, x~4.5%) and are stale — present-day Stellar (Messari Q1 2026) has ~87 active validators / 7 Tier-1 orgs with an org-level halt threshold; cite the qualitative liveness risk, not the 2019 numbers. Recurring integration disanalogy across the entire ZK cluster (SIEVE IR, WizToolKit, ZK-SecreC, emp-zk): none ships a turnkey non-interactive proof verifiable by a Stellar Soroban contract, and axlc emits SMT-LIB while SIEVE is circuit-based — the SMT->circuit translation plus a Soroman-compatible SNARK/STARK backend is the real engineering cost the sources do not provide. Source-quality notes: the seL4/HACMS evidence leans on a secondary survey (PMC5597724) for some facts, though independently corroborated by primary SOSP/CACM papers; the FBA quantitative claims rest on a single arXiv paper (split 2-1 votes) rather than multiple primary sources. 'Public-domain' is used operationally (open/declassified/openly published) — actual licenses are CC-BY-4.0, MIT, BSD-3-Clause, Apache-2.0, GPLv2, all permissive enough for integration but with attribution obligations, and Distribution Statement A is a DoD public-release marking, NOT an EAR/ITAR export determination. The Vineland-applicability framing in most ZK claims is the researcher's proposed integration locus, not a deployed fact.",
+    "openQuestions": [
+      "Does any production-grade non-interactive, publicly-verifiable proof system (Groth16/PLONK/STARK) consume SIEVE IR or compile from ZK-SecreC AND verify inside a Stellar Soroban contract within reasonable gas/CPU limits? This is the load-bearing gap for on-chain bounded-payment attestation.",
+      "What are NSA CNSA 2.0's concrete algorithm/timeline requirements (ML-KEM, ML-DSA, SLH-DSA, deadlines) and which apply to a fiat-payment rail like Vineland? No surviving claim substantiated CNSA 2.0 specifics — only SIEVE's general post-quantum-ZK direction.",
+      "Is NRL onion routing (Tor) or any authenticated-timing (e.g., Roughtime, NTS) technology relevant and integrable for Vineland's privacy/timestamp needs? These research-question filters produced no surviving claims and need a dedicated pass.",
+      "What are MoneyGram Access's actual fee schedule, settlement speed, API surface, and whether it supports programmatic/agent-initiated payments — the source rejected the no-disclosure claim but did not affirmatively establish these, leaving them unverified for a Vineland PIX<->Stellar<->cash flow."
+    ],
+    "refuted": [
+      {
+        "claim": "The page does not disclose fees, settlement speed, programmatic/API payment capability, or any agent-payment support.",
+        "vote": "1-2",
+        "source": "https://stellar.org/products-and-tools/moneygram"
+      },
+      {
+        "claim": "SIEVE's stated goal is verifying capabilities without revealing sensitive details, which is structurally the same as Vineland proving an agent payment satisfies bound/constrain/invariant predicates without exposing the underlying transaction internals.",
+        "vote": "0-3",
+        "source": "https://www.darpa.mil/research/programs/securing-information-for-encrypted-verification-and-evaluation"
+      },
+      {
+        "claim": "The two validator nodes whose failure halts the whole network are both operated by a single organization (the Stellar Foundation), making Stellar a single point of failure.",
+        "vote": "0-3",
+        "source": "https://arxiv.org/pdf/1904.13302"
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5597724/",
+        "quality": "primary",
+        "angle": "formal-verification + capability security (axlc prover layer)",
+        "claimCount": 5
+      },
+      {
+        "url": "https://securityaffairs.com/27087/hacking/sel4-hack-proof-darpa-derived-micro-kernel-goes-open-source-tomorrow.html",
+        "quality": "secondary",
+        "angle": "formal-verification + capability security (axlc prover layer)",
+        "claimCount": 4
+      },
+      {
+        "url": "https://stellar.org/products-and-tools/moneygram",
+        "quality": "primary",
+        "angle": "formal-verification + capability security (axlc prover layer)",
+        "claimCount": 4
+      },
+      {
+        "url": "https://www.entrust.com/resources/learn/what-is-cnsa-2-0",
+        "quality": "unreliable",
+        "angle": "formal-verification + capability security (axlc prover layer)",
+        "claimCount": 0
+      },
+      {
+        "url": "https://github.com/sieve-zk/ir",
+        "quality": "primary",
+        "angle": "zero-knowledge proof systems (payment-proof layer)",
+        "claimCount": 5
+      },
+      {
+        "url": "https://github.com/stealthsoftwareinc/wiztoolkit",
+        "quality": "primary",
+        "angle": "zero-knowledge proof systems (payment-proof layer)",
+        "claimCount": 5
+      },
+      {
+        "url": "https://github.com/zk-secrec/",
+        "quality": "primary",
+        "angle": "zero-knowledge proof systems (payment-proof layer)",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.darpa.mil/research/programs/securing-information-for-encrypted-verification-and-evaluation",
+        "quality": "primary",
+        "angle": "zero-knowledge proof systems (payment-proof layer)",
+        "claimCount": 5
+      },
+      {
+        "url": "https://github.com/emp-toolkit/emp-zk",
+        "quality": "primary",
+        "angle": "zero-knowledge proof systems (payment-proof layer)",
+        "claimCount": 5
+      },
+      {
+        "url": "https://cyber.ee/resources/news/zkp-in-e-governance-released/",
+        "quality": "primary",
+        "angle": "zero-knowledge proof systems (payment-proof layer)",
+        "claimCount": 4
+      },
+      {
+        "url": "https://lamport.azurewebsites.net/pubs/byz.pdf",
+        "quality": "primary",
+        "angle": "Byzantine fault tolerance + Stellar consensus (rail/consensus layer)",
+        "claimCount": 5
+      },
+      {
+        "url": "https://medium.com/@teplov.a.g.186/stellar-network-an-architectural-audit-of-federated-byzantine-agreement-and-protocol-native-8db9f31d368f",
+        "quality": "blog",
+        "angle": "Byzantine fault tolerance + Stellar consensus (rail/consensus layer)",
+        "claimCount": 5
+      },
+      {
+        "url": "https://arxiv.org/pdf/1904.13302",
+        "quality": "primary",
+        "angle": "Byzantine fault tolerance + Stellar consensus (rail/consensus layer)",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.scs.stanford.edu/~dm/blog/safety-vs-liveness.html",
+        "quality": "primary",
+        "angle": "Byzantine fault tolerance + Stellar consensus (rail/consensus layer)",
+        "claimCount": 5
+      },
+      {
+        "url": "https://arxiv.org/pdf/2002.08101",
+        "quality": "primary",
+        "angle": "Byzantine fault tolerance + Stellar consensus (rail/consensus layer)",
+        "claimCount": 5
+      },
+      {
+        "url": "https://en.wikipedia.org/wiki/Tor_(network)",
+        "quality": "secondary",
+        "angle": "onion routing privacy (NRL) + authenticated timing",
+        "claimCount": 5
+      },
+      {
+        "url": "https://github.com/cloudflare/roughtime",
+        "quality": "primary",
+        "angle": "onion routing privacy (NRL) + authenticated timing",
+        "claimCount": 4
+      },
+      {
+        "url": "https://github.com/int08h/roughenough",
+        "quality": "secondary",
+        "angle": "onion routing privacy (NRL) + authenticated timing",
+        "claimCount": 4
+      },
+      {
+        "url": "https://developers.stellar.org/docs/tools/ramps/moneygram",
+        "quality": "primary",
+        "angle": "onion routing privacy (NRL) + authenticated timing",
+        "claimCount": 3
+      },
+      {
+        "url": "https://postquantum.com/cnsa-2-0/complete-guide/",
+        "quality": "secondary",
+        "angle": "post-quantum crypto NSA CNSA 2.0 (auth/signature layer)",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.wultra.com/blog/passkeys-and-fido2-quietly-became-quantum-safe-heres-what-changed",
+        "quality": "blog",
+        "angle": "post-quantum crypto NSA CNSA 2.0 (auth/signature layer)",
+        "claimCount": 4
+      },
+      {
+        "url": "https://eprint.iacr.org/2022/1029",
+        "quality": "primary",
+        "angle": "post-quantum crypto NSA CNSA 2.0 (auth/signature layer)",
+        "claimCount": 5
+      },
+      {
+        "url": "https://developer.moneygram.com/moneygram-developer/docs/integrate-moneygram-ramps",
+        "quality": "primary",
+        "angle": "MoneyGram Access Stellar USDC on/off-ramp (commercial rail)",
+        "claimCount": 5
+      }
+    ],
+    "stats": {
+      "angles": 6,
+      "sourcesFetched": 23,
+      "claimsExtracted": 102,
+      "claimsVerified": 25,
+      "confirmed": 22,
+      "killed": 3,
+      "afterSynthesis": 10,
+      "urlDupes": 4,
+      "budgetDropped": 9,
+      "agentCalls": 106
+    }
+  }
+}

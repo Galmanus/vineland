@@ -1,0 +1,27 @@
+# deps / build
+node_modules/
+**/node_modules/
+dist/
+build/
+build_*/
+target/
+.next/
+*.tsbuildinfo
+
+# secrets / env (NUNCA commitar)
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+**/secrets*
+
+# zk heavy artifacts
+*.zkey
+*.ptau
+*.wtns
+*.wasm
+*.r1cs
+
+# os
+.DS_Store

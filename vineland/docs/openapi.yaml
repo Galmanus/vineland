@@ -1,0 +1,405 @@
+openapi: 3.0.3
+info:
+  title: Vineland API
+  version: "1.0.0"
+  description: >
+    Stellar-native commerce API. Create dollar-denominated orders and
+    subscriptions; buyers pay in USDC on Stellar mainnet; merchants receive
+    USDC directly in their own non-custodial wallet. Settlement ~6s, fee 2.97%.
+
+
+    **Authentication.** Two bearer schemes share the `Authorization` header:
+
+    - `apiKey` — `Authorization: Bearer sk_live_...` (server-side integrations,
+      e.g. the WooCommerce plugin). Used for order/subscription operations.
+
+    - `jwt` — `Authorization: Bearer <supabase_jwt>` (dashboard session). Used
+      for merchant account management. Some read endpoints accept either.
+
+
+    All amounts are decimal strings with fixed precision. Fiat amounts use 2
+    decimals (e.g. `"49.90"`); USDC amounts use 7 decimals.
+servers:
+  - url: https://api.vineland.cc
+    description: Production
+components:
+  securitySchemes:
+    apiKey:
+      type: http
+      scheme: bearer
+      description: "Server-side API key. Format: `Bearer sk_live_...`"
+    jwt:
+      type: http
+      scheme: bearer
+      description: "Supabase session JWT (merchant dashboard)."
+  schemas:
+    Error:
+      type: object
+      properties:
+        error: { type: string, example: validation_error }
+        issues:
+          type: array
+          items: { type: object }
+          description: Present on validation_error; Zod issue list.
+    CreateOrderInput:
+      type: object
+      description: Exactly one of `brl_amount` or `usd_amount` must be set.
+      properties:
+        brl_amount:
+          type: string
+          pattern: '^\d{1,9}\.\d{2}$'
+          example: "49.90"
+          description: BRL amount; converted to USDC at current rate.
+        usd_amount:
+          type: string
+          pattern: '^\d{1,9}\.\d{2}$'
+          example: "9.99"
+          description: USD amount; USDC 1:1 (no FX round-trip).
+        external_ref:
+          type: string
+          maxLength: 120
+          description: Your own reference for reconciliation.
+        expires_in_minutes:
+          type: integer
+          minimum: 5
+          maximum: 1440
+          default: 30
+    Order:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        merchant_id: { type: string, format: uuid }
+        external_ref: { type: string, nullable: true }
+        brl_amount: { type: string, nullable: true }
+        usd_amount: { type: string, nullable: true }
+        usdc_amount: { type: string, example: "9.9900000" }
+        rate_brl_usdc: { type: string, nullable: true }
+        memo: { type: string, description: Stellar payment memo to match the tx. }
+        status:
+          type: string
+          enum: [pending, paid, underpaid, expired, cancelled, dead]
+        platform_fee_bp: { type: integer, example: 98 }
+        fee_usdc: { type: string, example: "0.0979020" }
+        expires_at: { type: string, format: date-time }
+        paid_at: { type: string, format: date-time, nullable: true }
+        created_at: { type: string, format: date-time }
+    Fee:
+      type: object
+      properties:
+        platform_fee_bp: { type: integer, example: 98 }
+        gross_usdc: { type: string }
+        fee_usdc: { type: string }
+        net_usdc: { type: string }
+    CreateOrderResponse:
+      type: object
+      properties:
+        order: { $ref: '#/components/schemas/Order' }
+        checkout_url: { type: string, format: uri }
+        fee: { $ref: '#/components/schemas/Fee' }
+    CreateSubscriptionInput:
+      type: object
+      required: [brl_amount, period_seconds]
+      properties:
+        buyer_stellar_address:
+          type: string
+          minLength: 56
+          maxLength: 56
+        brl_amount:
+          type: string
+          pattern: '^\d{1,9}\.\d{2}$'
+          example: "29.90"
+        period_seconds:
+          type: integer
+          minimum: 86400
+          maximum: 31536000
+          description: Billing period (1 day to 1 year).
+        max_periods:
+          type: integer
+          minimum: 1
+          maximum: 120
+        webhook_url:
+          type: string
+          format: uri
+    CreateMerchantInput:
+      type: object
+      required: [display_name]
+      properties:
+        display_name: { type: string, minLength: 1, maxLength: 120 }
+        stellar_address: { type: string, description: 56-char Stellar G... address. }
+        webhook_url: { type: string, format: uri, description: HTTPS only. }
+    Merchant:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        display_name: { type: string }
+        email: { type: string }
+        stellar_address: { type: string, nullable: true }
+        webhook_url: { type: string, nullable: true }
+        api_key_prefix: { type: string }
+        platform_fee_bp: { type: integer, example: 98 }
+        created_at: { type: string, format: date-time }
+security:
+  - apiKey: []
+paths:
+  /api/health:
+    get:
+      summary: Health check
+      security: []
+      tags: [System]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: { ok: { type: boolean, example: true } }
+  /api/v1/orders:
+    post:
+      summary: Create an order
+      tags: [Orders]
+      security: [{ apiKey: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateOrderInput' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CreateOrderResponse' }
+        '400':
+          description: Validation or creation error
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+    get:
+      summary: List orders
+      tags: [Orders]
+      security: [{ apiKey: [] }, { jwt: [] }]
+      parameters:
+        - { name: status, in: query, schema: { type: string } }
+        - { name: limit, in: query, schema: { type: integer, default: 50, maximum: 200 } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orders:
+                    type: array
+                    items: { $ref: '#/components/schemas/Order' }
+  /api/v1/orders/{id}:
+    get:
+      summary: Read an order (checkout)
+      description: >
+        Public read for the buyer's checkout page. Requires the signed token
+        `t` issued at order creation (in `checkout_url`). No API key.
+      tags: [Orders]
+      security: []
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+        - { name: t, in: query, required: true, schema: { type: string }, description: Signed checkout token. }
+      responses:
+        '200': { description: OK }
+        '401': { description: Missing or invalid token }
+        '404': { description: Not found }
+  /api/v1/orders/{id}/cancel:
+    post:
+      summary: Cancel an order
+      tags: [Orders]
+      security: [{ apiKey: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200': { description: Cancelled }
+  /api/v1/subscriptions:
+    post:
+      summary: Create a subscription
+      tags: [Subscriptions]
+      security: [{ apiKey: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateSubscriptionInput' }
+      responses:
+        '201': { description: Created }
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+    get:
+      summary: List subscriptions
+      tags: [Subscriptions]
+      security: [{ apiKey: [] }, { jwt: [] }]
+      responses:
+        '200': { description: OK }
+  /api/v1/subscriptions/{id}:
+    get:
+      summary: Read a subscription
+      tags: [Subscriptions]
+      security: [{ apiKey: [] }, { jwt: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: OK }
+        '404': { description: Not found }
+    patch:
+      summary: Update a subscription
+      tags: [Subscriptions]
+      security: [{ apiKey: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Updated }
+  /api/v1/subscriptions/{id}/charge:
+    post:
+      summary: Charge a subscription (off-chain record)
+      tags: [Subscriptions]
+      security: [{ apiKey: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Charged }
+  /api/v1/subscriptions/{id}/onchain-charge:
+    post:
+      summary: Build an on-chain charge transaction
+      description: Returns an unsigned Soroban transaction for the buyer to sign.
+      tags: [Subscriptions]
+      security: [{ apiKey: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Unsigned transaction returned }
+  /api/v1/subscriptions/{id}/cancel:
+    post:
+      summary: Cancel a subscription
+      tags: [Subscriptions]
+      security: [{ apiKey: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Cancelled }
+  /api/v1/billing/fees:
+    get:
+      summary: Aggregate platform fees for a period
+      description: Sums `fee_usdc` over paid orders. Default window = current month.
+      tags: [Billing]
+      security: [{ apiKey: [] }, { jwt: [] }]
+      parameters:
+        - { name: from, in: query, schema: { type: string, format: date-time } }
+        - { name: to, in: query, schema: { type: string, format: date-time } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  period: { type: object }
+                  orders_count: { type: integer }
+                  gross_usdc: { type: string }
+                  fee_usdc_total: { type: string }
+                  net_usdc_total: { type: string }
+                  platform_fee_bp: { type: integer }
+  /api/v1/metrics/dune-snapshot:
+    get:
+      summary: Public on-chain subscription metrics
+      description: >
+        Cached snapshot of the public Dune dashboard. Returns
+        `configured:false` until the dashboard is published (real mainnet data).
+      tags: [Metrics]
+      security: []
+      responses:
+        '200': { description: OK }
+  /api/v1/merchants:
+    post:
+      summary: Create the merchant account
+      tags: [Merchants]
+      security: [{ jwt: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateMerchantInput' }
+      responses:
+        '201':
+          description: Created (returns api_key once — store it).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  merchant: { $ref: '#/components/schemas/Merchant' }
+                  api_key: { type: string, example: "sk_live_..." }
+  /api/v1/merchants/me:
+    get:
+      summary: Get the current merchant
+      tags: [Merchants]
+      security: [{ jwt: [] }]
+      responses:
+        '200': { description: OK }
+        '404': { description: Not found }
+    patch:
+      summary: Update the current merchant
+      tags: [Merchants]
+      security: [{ jwt: [] }]
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateMerchantInput' }
+      responses:
+        '200': { description: Updated }
+  /api/v1/merchants/me/rotate-key:
+    post:
+      summary: Rotate the API key
+      description: Returns a new api_key; the old one stops working immediately.
+      tags: [Merchants]
+      security: [{ jwt: [] }]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: { api_key: { type: string } }
+  /api/v1/x402-resources:
+    post:
+      summary: Create an x402 gated resource
+      tags: [x402]
+      security: [{ apiKey: [] }]
+      responses:
+        '201': { description: Created }
+    get:
+      summary: List x402 resources
+      tags: [x402]
+      security: [{ apiKey: [] }]
+      responses:
+        '200': { description: OK }
+  /api/v1/x402/{slug}:
+    get:
+      summary: Access a gated resource (x402)
+      description: Returns 402 Payment Required with payment instructions until paid.
+      tags: [x402]
+      security: []
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Paid — resource returned }
+        '402': { description: Payment required }
+tags:
+  - { name: Orders, description: One-off dollar-denominated charges. }
+  - { name: Subscriptions, description: Recurring on-chain billing (Soroban). }
+  - { name: Merchants, description: Account + API key management (dashboard). }
+  - { name: Billing, description: Platform-fee aggregation. }
+  - { name: Metrics, description: Public on-chain metrics. }
+  - { name: x402, description: Pay-per-request gated resources. }
+  - { name: System, description: Health. }

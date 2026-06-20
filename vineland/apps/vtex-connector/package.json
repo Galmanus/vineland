@@ -1,0 +1,11 @@
+{
+  "name": "@vineland/vtex-connector",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Vineland × VTEX Payment Provider Protocol connector (maps VTEX PPP onto Vineland's API).",
+  "scripts": {
+    "dev": "node src/index.mjs",
+    "start": "node src/index.mjs"
+  }
+}

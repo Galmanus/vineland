@@ -1,0 +1,102 @@
+name: deploy-production
+
+# Audit-005 · S5 — production deploy is gated by a signed tag, manual approval
+# from an `environments:` reviewer, frozen lockfiles, and a WASM hash
+# assertion so a tampered build artifact cannot reach mainnet.
+#
+# Triggers only on tags matching `v*-mainnet`. Use:
+#   git tag -s v0.2.0-mainnet -m "..."
+#   git push origin v0.2.0-mainnet
+# Unsigned tags WILL run jobs (GitHub doesn't gate on signature server-side
+# for tag triggers), so the verify-tag-signature step below is the
+# enforcement point — a pipeline failure aborts before any deploy.
+
+on:
+  push:
+    tags:
+      - 'v*-mainnet'
+
+permissions:
+  contents: read
+  id-token: write   # for OIDC if we move to it later
+
+concurrency:
+  group: prod-deploy
+  cancel-in-progress: false
+
+jobs:
+  verify-and-build:
+    name: Verify integrity & build
+    runs-on: ubuntu-latest
+    environment:
+      name: production       # requires manual approval in repo settings
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0     # need full history to verify tag signature
+
+      - name: Verify tag signature (audit-005 S5)
+        env:
+          REF: ${{ github.ref }}
+        run: |
+          tag="${REF#refs/tags/}"
+          echo "tag: $tag"
+          if ! git verify-tag "$tag" 2>&1 | grep -E 'Good signature|Primary key fingerprint'; then
+            echo "::error::tag $tag is not signed by a trusted key"
+            exit 1
+          fi
+
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: pnpm install --frozen-lockfile (audit-005 S4)
+        run: pnpm install --frozen-lockfile
+
+      - name: TS typecheck
+        run: pnpm -r run lint
+
+      - name: Unit tests
+        run: pnpm -r run test
+
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+          target: wasm32v1-none
+
+      - name: Contract build (locked) + WASM hash assertion (audit-005 S5)
+        working-directory: contracts/subscription
+        env:
+          # Set this to the on-chain wasm hash for the mainnet target. If the
+          # built artifact does not match, the deploy is aborted before any
+          # upload step. Update this constant via PR when intentionally
+          # uploading a new wasm version.
+          EXPECTED_WASM_HASH: ${{ vars.VINELAND_SUBSCRIPTION_WASM_HASH_MAINNET }}
+        run: |
+          cargo build --release --target wasm32v1-none --locked
+          actual=$(sha256sum target/wasm32v1-none/release/vineland_subscription.wasm | awk '{print $1}')
+          echo "built wasm sha256: $actual"
+          if [ -n "$EXPECTED_WASM_HASH" ] && [ "$actual" != "$EXPECTED_WASM_HASH" ]; then
+            echo "::error::wasm hash mismatch — expected=$EXPECTED_WASM_HASH actual=$actual"
+            exit 1
+          fi
+
+      - name: Contract unit tests
+        working-directory: contracts/subscription
+        run: cargo test --release
+
+      - name: Upload artifact for the deploy job
+        uses: actions/upload-artifact@v4
+        with:
+          name: vineland-subscription-wasm
+          path: contracts/subscription/target/wasm32v1-none/release/vineland_subscription.wasm
+          retention-days: 30
+
+  # Deploy step is intentionally NOT included in this file. The operator runs
+  # `stellar contract deploy` from a controlled environment with the mainnet
+  # deployer key (Ledger / multisig per audit-005 S1+S2). The pipeline above
+  # only produces a verified artifact; lifting it to mainnet stays manual on
+  # purpose until the key custody story is hardware-backed end to end.

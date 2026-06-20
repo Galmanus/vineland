@@ -1,0 +1,115 @@
+# AXL — proofs and limits
+
+This page states exactly what AXL proves, what the proof-carrying certificate
+binds, and what is not done today. It is deliberately conservative: AXL is a
+research and proof tool, not a deployed system.
+
+## What is proved
+
+The only directive sent to SMT is `invariant -> sliding_window(ceiling = M) bound K`.
+For that family, z3 discharges the epoch-state invariant:
+
+```
+invariant_K(prev, cur) = 0 <= prev <= cap AND 0 <= cur <= cap AND prev + cur <= K * cap
+```
+
+The inductive step shows that under the `accept` predicate (the weighted
+throughput check AND the aggregate ceiling `M * window_cap`), every accepted charge
+preserves `invariant_K`. UNSAT-to-break means the bound holds over all action
+sequences, not just sampled ones. The certified bound for `ceiling = 2` is
+`K = 2`: total outflow in any real-time window of length `W` is bounded by
+`2 * window_cap`.
+
+The `2x` is not a loose safety margin. It comes from the sliding-window straddle:
+spend up to `window_cap` just before an epoch boundary, then up to `window_cap`
+just after, and both land inside a single real `W`-length interval. The bound is
+proved tight (attainable) and minimal (`K = 1` is not inductive).
+
+The proof is over mathematical integers. The contract's saturating `i128`
+arithmetic only rejects more, so the bound is preserved on-chain.
+
+## What is not proved (the modeling seam)
+
+z3 discharges the epoch-state invariant on the `(prev, cur)` model. The step from
+that to the real-time sliding-window guarantee relies on an overlap premise: a
+window of length `W` touches at most two adjacent epochs, because epoch rolls fire
+only at `elapsed >= W`. That premise is a stated geometric lemma, not separately
+mechanized in this crate. The model encodes it (the `p1` carry/drop/keep
+definition), but the lemma itself is an argument, not a discharged obligation.
+
+AXL applies only to decidable policy (arithmetic, membership, bounded state). For
+irreducibly fuzzy judgment it does not apply and an LLM remains necessary; those
+judgments are not proofs.
+
+## The proof-carrying certificate
+
+`axlc certify` emits a deterministic JSON certificate; `axlc verify-cert`
+re-discharges and asserts byte-equality on the load-bearing projection. Three
+bindings matter:
+
+- **spec_sha256** — a real SHA-256 of the exact spec bytes. A certificate minted
+  for one spec does not verify against another spec's recomputed certificate; the
+  mismatch is named (`spec_sha256`).
+- **onchain block** — `onchain.window_cap_multiplier` carries the proved bound
+  `K`, and `onchain.ssl_hash` equals `spec_sha256`. The intent is that a
+  conformance test could read `K` from the certificate instead of hard-coding a
+  literal.
+- **ONCHAIN_ENFORCED_MULTIPLIER = 2** — a constant in `certify.rs`. The certificate
+  sets `matches_deployed_enforcement = (K == 2)`, comparing the proved bound
+  against the multiplier the smart-wallet contract hard-codes
+  (`prev_spent + cur_spent + amount <= 2 * window_cap`).
+
+`verify-cert` is the substrate a CI merge-gate or a third-party auditor would run
+to catch drift between a deployed bound and its proof.
+
+## Honest limitations
+
+This is the load-bearing section. The certificate machinery is real and the tests
+are green, but the moat thesis around it does not hold today. The summary below
+follows the `axl-compiler/MOAT_EVOLUTION_2026_06_02.md` synthesis.
+
+**The proof is not the moat.** The z3 model is roughly 40 lines of SMT. A
+competent formal-verification engineer ports it in engineer-weeks. There is no
+legal or algorithmic barrier (disanalogy with a patent: a patent makes replication
+illegal; a ported SMT model makes it merely some weeks of work). The only durable
+barrier would be adoption of the certificate as a standard or required-to-participate
+forcing function, and that adoption does not exist.
+
+Three concrete gaps, found in the code:
+
+1. **The `axlc-gate` CI check is fictional.** A test comment references an
+   `axlc-gate` CI workflow, but no such workflow exists in `.github/workflows`. No
+   CI step runs cargo / axlc / z3 / conformance. The proof can silently drift from
+   the deployed contract on any PR. `verify-cert` makes this gap *closable*, but it
+   is not wired anywhere, so it is not closed.
+
+2. **The conformance bound is hard-coded.** The contract-side conformance test
+   uses `window_cap * 2` as a literal, not a value read from a certificate. If AXL
+   proved `K = 3`, the conformance test would not track it. The proof-to-chain
+   agreement is by human review, not by artifact. The certificate's `onchain`
+   block *enables* reading `K` from the cert, but the test is not rewired to do so.
+
+3. **`ssl_hash` is provenance-only.** The smart-wallet contract pins `ssl_hash`
+   immutably but does not interpret it, and the contract crate has no dependency on
+   `axl-compiler`. A spend is not cryptographically tied to the proved policy. The
+   certificate provides a real SHA-256 that *could* be threaded as `ssl_hash`, but
+   the deployment scripts are not rewired to do so.
+
+Additional caveats:
+
+- **Build-only, no on-chain artifact.** AXL produces certificates on disk. Nothing
+  about AXL is deployed on-chain, and the chain enforces nothing about the proof.
+- **Zero downstream adoption.** No second prover, no insurer, no on-chain
+  certificate registry consumes these certificates. A standard with no adopters is
+  not a standard.
+- **Solver is a runtime dependency.** `prove` / `certify` / `verify-cert` require
+  z3 (binary or the `z3-solver` Python package) at run time. The crate itself
+  compiles with zero dependencies.
+
+## Where this leaves AXL
+
+What survives honestly: the certificate is useful audit and CI rigor — a real
+provenance hash plus a drift-catching verification command — and a necessary
+precondition for any future standard built on top of it. It is not the standard,
+and the on-chain enforcement half is not built. Treat AXL as a verifier you can
+run offline against a spec, not as a control that is in any production path today.

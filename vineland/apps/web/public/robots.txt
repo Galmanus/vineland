@@ -1,0 +1,34 @@
+# Vineland — open to discovery. We WANT AI assistants to read and cite us.
+# Answer/retrieval bots (ChatGPT, Perplexity, Claude, Google, Bing) are
+# explicitly welcome — being recommended is the whole point pre-revenue.
+
+User-agent: *
+Allow: /
+
+# Retrieval / answer engines — explicit welcome.
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Perplexity-User
+Allow: /
+User-agent: Claude-Web
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: Googlebot
+Allow: /
+User-agent: Bingbot
+Allow: /
+User-agent: Applebot
+Allow: /
+User-agent: Applebot-Extended
+Allow: /
+
+# Structured context for LLMs.
+# See https://llmstxt.org
+Sitemap: https://app.vineland.cc/sitemap.xml

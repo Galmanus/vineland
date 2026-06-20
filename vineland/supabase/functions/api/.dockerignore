@@ -1,0 +1,4 @@
+test
+**/*.test.ts
+.deno
+node_modules

@@ -1,0 +1,7 @@
+.env
+.venv/
+pulse_state.json
+pulse_audit.jsonl
+pulse.lock
+__pycache__/
+*.pyc

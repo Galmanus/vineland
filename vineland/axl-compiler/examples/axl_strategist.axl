@@ -1,0 +1,13 @@
+// Axl — Machiavelli Prime, expressed as an enforceable capability contract.
+// Persona/voice/doctrine live in the SSL soul layer; aXL governs ACTION.
+// Forbidden classes are excluded by construction: they are never bound, and
+// the `action in account.allowed_actions` predicate fails closed on anything
+// outside the whitelist. Default-deny + proof.
+
+agent AxlStrategist {
+  bind      -> [read_context, draft_counsel, run_premortem]
+  constrain -> CounselDecision
+  prove     -> decision.dimensions_touched >= 2
+  prove     -> decision.action in account.allowed_actions
+  invariant -> sliding_window(ceiling = 5) bound 5
+}

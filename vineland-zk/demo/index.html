@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vineland ZK · prova sem revelar</title>
+<style>
+  :root{
+    --bone:#f1eee7; --ink:#15130f; --ink-soft:#5c574e; --line:#d8d2c6;
+    --yellow:#fdda24; --paper:#fbf9f4; --leak:#b4402f; --ok:#1f7a4d;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bone); color:var(--ink);
+    font-family:"Georgia","Times New Roman",serif;
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+  .mono{font-family:"SFMono-Regular","Consolas","Liberation Mono",monospace}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 28px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--ink-soft);font-family:"SFMono-Regular",monospace}
+  .num{font-family:"SFMono-Regular",monospace;font-size:12px;letter-spacing:.2em;color:var(--ink-soft)}
+
+  /* hero */
+  header{border-bottom:2px solid var(--ink);padding:22px 0;position:sticky;top:0;background:var(--bone);z-index:5}
+  header .wrap{display:flex;justify-content:space-between;align-items:baseline}
+  .brand{font-weight:700;letter-spacing:-.02em;font-size:18px}
+  .brand b{background:var(--yellow);padding:0 4px}
+  .tag{font-family:"SFMono-Regular",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft)}
+
+  .hero{padding:90px 0 70px;border-bottom:1px solid var(--line)}
+  .hero h1{font-size:clamp(38px,7vw,82px);line-height:.98;letter-spacing:-.03em;font-weight:700;max-width:14ch}
+  .hero h1 mark{background:var(--yellow);padding:0 .08em}
+  .hero p{margin-top:30px;font-size:clamp(17px,2.4vw,22px);max-width:46ch;color:var(--ink-soft);line-height:1.45}
+  .hero .meta{margin-top:42px;display:flex;gap:34px;flex-wrap:wrap}
+  .hero .meta div{border-left:2px solid var(--ink);padding-left:14px}
+  .hero .meta .k{font-family:"SFMono-Regular",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft)}
+  .hero .meta .v{font-size:25px;font-weight:700;letter-spacing:-.02em;margin-top:3px}
+
+  section{padding:74px 0;border-bottom:1px solid var(--line)}
+  .shead{display:flex;align-items:baseline;gap:18px;margin-bottom:14px}
+  .shead h2{font-size:clamp(26px,4vw,40px);letter-spacing:-.02em;font-weight:700}
+  .lede{font-size:18px;color:var(--ink-soft);max-width:60ch;margin-bottom:40px;line-height:1.5}
+
+  /* contrast */
+  .toggle{display:inline-flex;border:2px solid var(--ink);margin-bottom:34px;font-family:"SFMono-Regular",monospace;font-size:13px}
+  .toggle button{padding:11px 20px;background:var(--bone);border:none;cursor:pointer;font:inherit;letter-spacing:.06em;text-transform:uppercase;color:var(--ink)}
+  .toggle button.on{background:var(--ink);color:var(--bone)}
+  .ledger{border:2px solid var(--ink);background:var(--paper)}
+  .ledger .lh{display:flex;justify-content:space-between;padding:14px 20px;border-bottom:2px solid var(--ink);font-family:"SFMono-Regular",monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+  .ledger .lh .dot{font-weight:700}
+  .row{display:grid;grid-template-columns:46px 1fr 1fr;padding:13px 20px;border-bottom:1px solid var(--line);font-family:"SFMono-Regular",monospace;font-size:14px;align-items:center}
+  .row:last-child{border-bottom:none}
+  .row .i{color:var(--ink-soft)}
+  .leakv{color:var(--leak);font-weight:700}
+  .hidev{color:var(--ink-soft);letter-spacing:.05em}
+  .verdict{padding:20px;display:flex;align-items:center;gap:14px;border-top:2px solid var(--ink);font-family:"SFMono-Regular",monospace}
+  .badge{display:inline-block;padding:5px 11px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+  .badge.bad{background:var(--leak);color:#fff}
+  .badge.good{background:var(--ok);color:#fff}
+  .verdict .vt{font-size:14px;color:var(--ink-soft)}
+  .hidden-note{font-size:13px;color:var(--ink-soft);margin-top:16px;font-style:italic}
+
+  /* mandate cards */
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .card{border:2px solid var(--ink);padding:24px;background:var(--paper)}
+  .card .ci{font-family:"SFMono-Regular",monospace;font-size:11px;letter-spacing:.2em;color:var(--ink-soft);text-transform:uppercase}
+  .card h3{font-size:21px;margin:10px 0 8px;letter-spacing:-.01em}
+  .card p{font-size:14.5px;color:var(--ink-soft)}
+
+  /* regulator */
+  .reg{display:grid;grid-template-columns:1fr 1fr;gap:0;border:2px solid var(--ink);background:var(--paper)}
+  .reg .col{padding:30px}
+  .reg .col:first-child{border-right:2px solid var(--ink)}
+  .reg .clabel{font-family:"SFMono-Regular",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:16px}
+  .ct{font-family:"SFMono-Regular",monospace;font-size:12.5px;word-break:break-all;color:var(--ink);background:var(--bone);padding:14px;border:1px dashed var(--line);line-height:1.7}
+  .reg button{margin-top:22px;background:var(--ink);color:var(--bone);border:none;padding:14px 22px;font-family:"SFMono-Regular",monospace;font-size:13px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+  .reg button:hover{background:var(--yellow);color:var(--ink)}
+  .recovered{font-size:54px;font-weight:700;letter-spacing:-.03em;opacity:0;transition:opacity .5s;margin-top:8px}
+  .recovered.show{opacity:1}
+  .recovered small{display:block;font-size:13px;font-weight:400;font-family:"SFMono-Regular",monospace;color:var(--ink-soft);letter-spacing:.04em;margin-top:6px}
+
+  /* proof strip */
+  .proof{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:2px solid var(--ink)}
+  .proof div{padding:26px;border-right:1px solid var(--line)}
+  .proof div:last-child{border-right:none}
+  .proof .pk{font-family:"SFMono-Regular",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft)}
+  .proof .pv{font-size:30px;font-weight:700;letter-spacing:-.02em;margin-top:8px}
+  .proof a{color:var(--ink);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+  footer{padding:50px 0;font-family:"SFMono-Regular",monospace;font-size:12px;color:var(--ink-soft);letter-spacing:.06em}
+  .reveal{opacity:0;transform:translateY(16px);animation:rise .7s forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+  @media(max-width:760px){.grid3,.reg,.proof{grid-template-columns:1fr}.reg .col:first-child{border-right:none;border-bottom:2px solid var(--ink)}.proof div{border-right:none;border-bottom:1px solid var(--line)}.row{grid-template-columns:34px 1fr 1fr}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="brand"><b>vineland</b> zk</div>
+  <div class="tag">real-world zk · stellar</div>
+</div></header>
+
+<div class="hero"><div class="wrap reveal">
+  <div class="eyebrow">provable bounded autonomy</div>
+  <h1 style="margin-top:20px">A IA prova que <mark>obedeceu.</mark> Sem mostrar nada.</h1>
+  <p>O agente do Vineland paga as contas sozinho, pelas suas regras. Agora ele prova — numa única prova criptográfica, verificada on-chain — que <b>nenhum pagamento furou a regra</b>, sem revelar valor, recebedor ou total. E só um regulador, com a chave, consegue abrir os números.</p>
+  <div class="meta">
+    <div><div class="k">verifica on-chain</div><div class="v">44,6M <span style="font-size:14px;color:var(--ink-soft)">instr · 11% do budget</span></div></div>
+    <div><div class="k">pagamentos no lote</div><div class="v">8 <span style="font-size:14px;color:var(--ink-soft)">→ escala grátis on-chain</span></div></div>
+    <div><div class="k">status</div><div class="v">live · mainnet</div></div>
+  </div>
+</div></div>
+
+<section><div class="wrap">
+  <div class="shead"><span class="num">01</span><h2>O mesmo lote, dois mundos.</h2></div>
+  <p class="lede">Oito pagamentos do agente neste mês. Sem ZK, o ledger entrega tudo de bandeja. Com ZK, ele entrega só uma coisa: a verdade de que a regra foi cumprida.</p>
+  <div class="toggle">
+    <button id="bNo" class="on" onclick="setMode(false)">sem zk</button>
+    <button id="bYes" onclick="setMode(true)">com zk</button>
+  </div>
+  <div class="ledger" id="ledger"></div>
+  <div class="hidden-note" id="note"></div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="shead"><span class="num">02</span><h2>A regra é pública. Os pagamentos, não.</h2></div>
+  <p class="lede">O mandato do agente é o que entra na prova como público. Os 8 valores e recebedores ficam privados — a prova só atesta que todos cabem na regra.</p>
+  <div class="grid3">
+    <div class="card"><div class="ci">teto por pagamento</div><h3>R$ 500</h3><p>nenhum pagamento do lote pode passar disso.</p></div>
+    <div class="card"><div class="ci">allowlist</div><h3>4 recebedores</h3><p>todo pagamento tem que ir pra um endereço autorizado.</p></div>
+    <div class="card"><div class="ci">teto mensal</div><h3>R$ 2.000</h3><p>a soma do mês não pode estourar — e a soma fica cifrada.</p></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="shead"><span class="num">03</span><h2>A porta do regulador.</h2></div>
+  <p class="lede">O público vê só o ciphertext. O regulador — e apenas ele, com a chave privada — recupera o total real gasto. Privacidade pra todos, recurso legal pra quem precisa. Não é Tornado: tem porta, e só uma.</p>
+  <div class="reg">
+    <div class="col">
+      <div class="clabel">o que o mundo vê (público)</div>
+      <div class="ct" id="ct"></div>
+    </div>
+    <div class="col">
+      <div class="clabel">o que o regulador recupera (com a chave)</div>
+      <p style="color:var(--ink-soft);font-size:14.5px">A chave privada do regulador decifra o total real do mês a partir do ciphertext. Ninguém sem a chave consegue.</p>
+      <button onclick="decrypt()">decifrar com a chave →</button>
+      <div class="recovered" id="rec">R$ 1.450<small>total real do mês · soma dos 8 pagamentos privados</small></div>
+    </div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="shead"><span class="num">04</span><h2>Real, na Stellar.</h2></div>
+  <p class="lede">Não é slide. A prova verifica no contrato Soroban em mainnet, com BN254 nativo (Protocol 25 / X-Ray). Custo on-chain constante: provar 1.000 pagamentos custa o mesmo que provar 8.</p>
+  <div class="proof">
+    <div><div class="pk">verify on-chain</div><div class="pv">44,6M instr</div></div>
+    <div><div class="pk">uma prova, N pagamentos</div><div class="pv">~$0,01</div></div>
+    <div><div class="pk">tx na mainnet</div><div class="pv"><a href="https://stellar.expert/explorer/public/tx/4ffedf70df2c1c0665b04a03b689244e38d27cd8b27dd699399447228c0596ee" target="_blank" rel="noopener">ver ↗</a></div></div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">vineland zk · prova sem revelar · groth16 / bn254 · contrato CBDS2YSL…U3FE · revisão interna feita, auditoria externa em curso — não proteja fundo real ainda</div></footer>
+
+<script>
+  // real demo batch (private in the proof)
+  var PAY=[[100,11],[200,22],[150,33],[250,44],[100,11],[300,22],[200,33],[150,44]];
+  var NAMES={11:"Maria",22:"João",33:"Acme Ltda",44:"Energia SA"};
+  function setMode(zk){
+    document.getElementById('bNo').className=zk?'':'on';
+    document.getElementById('bYes').className=zk?'on':'';
+    var L=document.getElementById('ledger');
+    var rows='<div class="lh"><span>ledger público · junho</span><span class="dot">'+(zk?'com zk':'sem zk')+'</span></div>';
+    if(!zk){
+      PAY.forEach(function(p,i){rows+='<div class="row"><span class="i">'+(i+1)+'</span><span class="leakv">R$ '+p[0]+'</span><span class="leakv">→ '+NAMES[p[1]]+'</span></div>';});
+      rows+='<div class="verdict"><span class="badge bad">vaza tudo</span><span class="vt">qualquer um vê quanto e pra quem. concorrente, ex-funcionário, golpista.</span></div>';
+      document.getElementById('note').textContent='Compliance hoje custa a privacidade: pra provar que é certinho, você abre os números de todo mundo.';
+    } else {
+      PAY.forEach(function(p,i){rows+='<div class="row"><span class="i">'+(i+1)+'</span><span class="hidev">R$ ·····</span><span class="hidev">→ ·······</span></div>';});
+      rows+='<div class="verdict"><span class="badge good">✓ compliant</span><span class="vt">prova única: todos ≤ R$500, todos na allowlist, soma ≤ R$2.000. valores ocultos.</span></div>';
+      document.getElementById('note').textContent='O ledger entrega só a verdade da regra. Os 8 valores e recebedores nunca aparecem.';
+    }
+    L.innerHTML=rows;
+  }
+  function decrypt(){document.getElementById('rec').className='recovered show';}
+  // public ciphertext (real, from the on-chain proof) — truncated for display
+  document.getElementById('ct').innerHTML=
+    'encryptedTotal.x<br>639396353211749888971277…<br><br>encryptedTotal.y<br>105740718413147669530046…<br><br>ephemeralKey.x<br>125267700366023675623379…';
+  setMode(false);
+</script>
+</body>
+</html>

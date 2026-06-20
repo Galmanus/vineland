@@ -1,0 +1,22 @@
+{
+  "name": "vineland-solana",
+  "version": "0.1.0",
+  "license": "MIT",
+  "scripts": {
+    "test": "mocha --require tsx/cjs --extension ts -t 1000000 tests/**/*.ts"
+  },
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.31.1",
+    "@solana/spl-token": "^0.4.9"
+  },
+  "devDependencies": {
+    "@types/chai": "^4",
+    "@types/mocha": "^10",
+    "chai": "^4",
+    "mocha": "^10",
+    "ts-mocha": "^10",
+    "tsx": "^4",
+    "typescript": "^5"
+  },
+  "type": "commonjs"
+}

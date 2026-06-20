@@ -1,0 +1,9 @@
+node_modules
+dist
+.env*
+.git
+**/*.test.ts
+test
+coverage
+.turbo
+.vercel

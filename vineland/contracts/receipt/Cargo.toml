@@ -1,0 +1,30 @@
+[package]
+name = "vineland-receipt"
+version = "0.1.0"
+edition = "2021"
+authors = ["Manuel Galmanus <manuel@bluewaveai.online>"]
+description = "Soroban verifiable recurring-charge receipt ledger — a tamper-evident hash chain that proves an off-chain-settled recurring payment (e.g. Pix BRL) happened and commits to its amount WITHOUT revealing it on-chain. Receipt/attestation layer, not a confidential-transfer primitive."
+license = "Apache-2.0"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+soroban-sdk = "26"
+
+[dev-dependencies]
+soroban-sdk = { version = "26", features = ["testutils"] }
+
+[profile.release]
+opt-level = "z"
+overflow-checks = true
+debug = 0
+strip = "symbols"
+debug-assertions = false
+panic = "abort"
+codegen-units = 1
+lto = true
+
+[profile.release-with-logs]
+inherits = "release"
+debug-assertions = true

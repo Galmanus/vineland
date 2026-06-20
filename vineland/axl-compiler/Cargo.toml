@@ -1,0 +1,27 @@
+# Axl compiler — standalone Rust port of agents/axl/{bind,compile}.mjs.
+#
+# ZERO external dependencies (std only). Hand-rolled JSON parser+serializer,
+# hand-rolled "regex-equivalent" parsing — no serde, no nom, no regex crate.
+#
+# The empty [workspace] table below detaches this crate from any parent Cargo
+# workspace (e.g. a future Soroban/wasm workspace above it), so `cargo build`
+# here NEVER pulls this into a wasm/cdylib build target.
+[workspace]
+
+[package]
+name = "axl-compiler"
+version = "0.1.0"
+edition = "2021"
+authors = ["Manuel Galmanus <manuel@bluewaveai.online>"]
+description = "Standalone std-only Rust port of the Axl agent-block compiler (bind/constrain/prove -> InferenceContract + Anthropic request config). No external dependencies."
+license = "Apache-2.0"
+
+[lib]
+name = "axl_compiler"
+path = "src/lib.rs"
+
+[[bin]]
+name = "axlc"
+path = "src/bin/axlc.rs"
+
+# NO [dependencies] section — std only, by hard requirement.

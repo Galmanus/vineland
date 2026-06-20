@@ -1,0 +1,4 @@
+{
+  "decision": { "action": "draft_counsel", "dimensions_touched": 3 },
+  "account":  { "allowed_actions": ["read_context", "draft_counsel", "run_premortem"] }
+}

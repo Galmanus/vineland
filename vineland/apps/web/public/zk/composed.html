@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vineland ZK · one proof, two truths</title>
+<style>
+  :root{
+    --bone:#f1eee7; --ink:#15130f; --ink-soft:#5c574e; --line:#d8d2c6;
+    --yellow:#fdda24; --paper:#fbf9f4; --leak:#b4402f; --ok:#1f7a4d;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bone);color:var(--ink);font-family:"Georgia","Times New Roman",serif;line-height:1.5}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 28px}
+  .mono,.eyebrow,.num,.tag,.k,.pill{font-family:"SFMono-Regular","Consolas","Liberation Mono",monospace}
+  .eyebrow{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--ink-soft)}
+  .num{font-size:12px;letter-spacing:.2em;color:var(--ink-soft)}
+  header{border-bottom:2px solid var(--ink);padding:22px 0;position:sticky;top:0;background:var(--bone);z-index:5;display:flex}
+  header .wrap{display:flex;justify-content:space-between;align-items:center;width:100%}
+  .brand b{background:var(--yellow);padding:0 4px;font-family:"SFMono-Regular",monospace}
+  .tag{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft)}
+  .hero{padding:84px 0 60px;border-bottom:1px solid var(--line)}
+  .hero h1{font-size:clamp(34px,6.2vw,72px);line-height:1.02;letter-spacing:-.03em;font-weight:700;max-width:16ch}
+  .hero h1 mark{background:var(--yellow);padding:0 .08em}
+  .hero p{margin-top:22px;font-size:clamp(17px,2vw,21px);color:var(--ink-soft);max-width:54ch}
+  .meta{display:flex;gap:48px;margin-top:40px;flex-wrap:wrap}
+  .k{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft)}
+  .v{font-size:26px;font-weight:700;letter-spacing:-.01em;margin-top:6px}
+  section{padding:68px 0;border-bottom:1px solid var(--line)}
+  .shead{display:flex;align-items:baseline;gap:18px;margin-bottom:14px}
+  .shead h2{font-size:clamp(26px,4vw,40px);letter-spacing:-.02em;font-weight:700}
+  .lede{font-size:clamp(17px,2vw,20px);color:var(--ink-soft);max-width:60ch;margin-bottom:34px}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--ink);border:2px solid var(--ink);border-radius:6px;overflow:hidden}
+  @media(max-width:760px){.steps{grid-template-columns:1fr}}
+  .step{background:var(--paper);padding:26px 22px;min-height:180px;position:relative}
+  .step .ci{font-family:"SFMono-Regular",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft)}
+  .step h3{font-size:23px;margin:12px 0 8px;letter-spacing:-.01em}
+  .step p{font-size:15px;color:var(--ink-soft)}
+  .step .badge{position:absolute;top:20px;right:20px;font-family:"SFMono-Regular",monospace;font-size:11px;padding:3px 9px;border-radius:20px;letter-spacing:.05em}
+  .badge.priv{background:#e7e2d6;color:var(--ink-soft)}
+  .badge.pub{background:var(--yellow);color:var(--ink)}
+  .badge.ok{background:var(--ok);color:#fff}
+  .flip{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--ink);border:2px solid var(--ink);border-radius:6px;overflow:hidden;margin-top:8px}
+  @media(max-width:760px){.flip{grid-template-columns:1fr}}
+  .pane{background:var(--paper);padding:30px 26px;min-height:230px}
+  .pane.reg{background:#15130f;color:var(--bone)}
+  .pane h4{font-family:"SFMono-Regular",monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:18px}
+  .pane.reg h4{color:var(--yellow)}
+  .cipher{font-family:"SFMono-Regular",monospace;font-size:12px;word-break:break-all;color:var(--ink-soft);line-height:1.7}
+  .reveal-amt{font-size:40px;font-weight:700;letter-spacing:-.02em;margin-top:4px}
+  .reg .cap{font-family:"SFMono-Regular",monospace;font-size:11px;color:#9c968a;letter-spacing:.1em;text-transform:uppercase}
+  .row{display:flex;justify-content:space-between;padding:11px 0;border-top:1px solid rgba(255,255,255,.12);font-size:14px}
+  .pane:not(.reg) .row{border-color:var(--line)}
+  .pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:30px;padding:8px 16px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin-top:8px}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--ok)}
+  a{color:var(--ink)}
+  a.tx{font-family:"SFMono-Regular",monospace;font-size:12px;color:var(--ink-soft);border-bottom:1px solid var(--line)}
+  .btn{font-family:"SFMono-Regular",monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;background:var(--ink);color:var(--bone);border:none;padding:14px 26px;border-radius:30px;cursor:pointer;margin-top:8px}
+  .btn:active{transform:scale(.97)}
+  .reveal{opacity:0;transform:translateY(16px);animation:rise .7s forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+  footer{padding:50px 0;color:var(--ink-soft);font-family:"SFMono-Regular",monospace;font-size:12px;letter-spacing:.1em}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="brand"><b>vineland</b> zk</div>
+  <div class="tag">real-world zk · stellar mainnet</div>
+</div></header>
+
+<div class="hero"><div class="wrap reveal">
+  <div class="eyebrow">confidential identity + bounded autonomy</div>
+  <h1 style="margin-top:22px">One proof. <mark>Two truths.</mark> Zero data.</h1>
+  <p>A verified human lets an AI agent pay their bills. Two zero-knowledge proofs, verified on <b>Stellar mainnet</b>: the person is real, of age and non-sanctioned — and every payment obeyed the mandate. Without revealing identity, amounts or recipients. And only the regulator, with the key, opens the total.</p>
+  <div class="meta">
+    <div><div class="k">on-chain proofs</div><div class="v">2 <span style="font-size:14px;color:var(--ink-soft)">· KYC + mandate</span></div></div>
+    <div><div class="k">data revealed</div><div class="v">0 <span style="font-size:14px;color:var(--ink-soft)">· prove-not-send</span></div></div>
+    <div><div class="k">status</div><div class="v">live · mainnet</div></div>
+  </div>
+</div></div>
+
+<!-- STEP 1 — KYC -->
+<section><div class="wrap">
+  <div class="shead"><span class="num">01</span><h2>Who: the human proves, without showing.</h2></div>
+  <p class="lede">Before a single cent, the person proves eligibility — without handing over their ID. The licensed partner runs KYC and signs the credential; Vineland only sees the cryptographic commitment, never the data.</p>
+  <div class="steps">
+    <div class="step"><span class="badge ok">proved</span><div class="ci">registered</div><h3>Valid credential</h3><p>In the partner’s issued-credential tree. Which one? Nobody knows.</p></div>
+    <div class="step"><span class="badge priv">private</span><div class="ci">age ≥ 18</div><h3>Of age</h3><p>Proves 18+ without revealing the birth date.</p></div>
+    <div class="step"><span class="badge priv">private</span><div class="ci">sanctions</div><h3>Non-sanctioned</h3><p>Off the sanctions list — without revealing the identifier.</p></div>
+  </div>
+  <a class="tx" href="https://stellar.expert/explorer/public/tx/83ee1697486a24c3fd389b812f00c5693659cc3837f6fa653c42b62afc1751d6" target="_blank" rel="noreferrer">↗ KYC proof · verify=true on mainnet · tx 83ee1697…</a>
+</div></section>
+
+<!-- STEP 2 — mandate -->
+<section><div class="wrap">
+  <div class="shead"><span class="num">02</span><h2>What: the agent proves it obeyed.</h2></div>
+  <p class="lede">Now the agent pays on its own — but only within the owner’s rule. A single proof attests that the month’s 8 payments fit the mandate. The rule is public; the payments are not.</p>
+  <div class="steps">
+    <div class="step"><span class="badge pub">public</span><div class="ci">per-payment cap</div><h3>R$ 500</h3><p>no payment in the batch exceeded it.</p></div>
+    <div class="step"><span class="badge pub">public</span><div class="ci">allowlist</div><h3>authorized recipients</h3><p>every payment went to an approved address.</p></div>
+    <div class="step"><span class="badge priv">private</span><div class="ci">8 amounts + recipients</div><h3>hidden</h3><p>the proof attests they fit the rule — without showing which.</p></div>
+  </div>
+  <a class="tx" href="https://stellar.expert/explorer/public/contract/CBDS2YSLATINQVUDG5Y5HV4KQBEAVFDRPEINVEUTYSX3CZZQKBY5U3FE" target="_blank" rel="noreferrer">↗ mandate verifier · live on mainnet · contract CBDS2YSL…</a>
+</div></section>
+
+<!-- STEP 3 — regulator flip -->
+<section><div class="wrap">
+  <div class="shead"><span class="num">03</span><h2>The regulator’s door.</h2></div>
+  <p class="lede">The public sees only the ciphertext. The regulator — and only them, with the private key — recovers the real total spent that month. Privacy for everyone, legal recourse for who needs it. Not Tornado: there is a door, and only one.</p>
+  <div class="flip">
+    <div class="pane">
+      <h4>public / auditor</h4>
+      <div class="cap mono" style="font-size:11px;color:var(--ink-soft);letter-spacing:.1em;text-transform:uppercase">what anyone sees</div>
+      <div class="cipher" id="cipher">9f3a…c71b 04e8…aa20 1d77…b3f5 e2c0…9148</div>
+      <div class="row"><span>rule satisfied</span><span style="color:var(--ok);font-weight:700">✓ proved</span></div>
+      <div class="row"><span>month total</span><span class="mono">encrypted</span></div>
+    </div>
+    <div class="pane reg">
+      <h4>regulator · with the key</h4>
+      <div class="cap">what only they recover</div>
+      <div class="reveal-amt" id="amt">— — —</div>
+      <div class="row"><span>real total spent</span><span class="mono" id="rstatus">awaiting key</span></div>
+      <button class="btn" id="decBtn" onclick="decrypt()">decrypt with the key →</button>
+    </div>
+  </div>
+  <div class="pill"><span class="dot"></span> both proofs verify on the same BN254/Groth16/Poseidon stack · Protocol 26</div>
+</div></section>
+
+<footer><div class="wrap">
+  vineland zk · proof-of-KYC + bounded-autonomy mandate · verified on stellar mainnet · unaudited, demo keys · github.com/Galmanus/vineland-zk
+</div></footer>
+
+<script>
+  function decrypt(){
+    var amt=document.getElementById("amt"), st=document.getElementById("rstatus"), b=document.getElementById("decBtn");
+    var target=1450, t0=null, dur=900;
+    b.disabled=true; b.style.opacity=.5; b.textContent="decrypting…";
+    function step(ts){ if(!t0)t0=ts; var p=Math.min((ts-t0)/dur,1);
+      var v=Math.floor(p*target); amt.textContent="R$ "+v.toLocaleString("pt-BR");
+      if(p<1){requestAnimationFrame(step);} else {amt.textContent="R$ 1.450";st.textContent="recovered";st.style.color="var(--yellow)";b.textContent="total revealed ✓";} }
+    requestAnimationFrame(step);
+  }
+</script>
+</body>
+</html>

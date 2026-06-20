@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Vineland · PULSO Hackathon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{ --bone:#f1eee7; --bone2:#f5f3ee; --ink:#0a0a0a; --gold:#FDDA24; --gray:#6f6862; }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  body{ font-family:'Inter',system-ui,sans-serif; background:var(--ink); color:var(--ink); }
+  ::selection{ background:var(--gold); color:var(--ink); }
+  .deck{ scroll-snap-type:y mandatory; height:100vh; overflow-y:scroll; }
+  .s{ scroll-snap-align:start; min-height:100vh; padding:6vh 8vw; display:flex; flex-direction:column; justify-content:center; position:relative; }
+  .bone{ background:var(--bone); } .bone2{ background:var(--bone2); } .dark{ background:var(--ink); color:var(--bone); }
+  .stamp{ font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.3em; text-transform:uppercase; color:var(--gray); display:flex; align-items:center; gap:14px; }
+  .stamp.l::before{ content:""; width:42px; height:1px; background:currentColor; opacity:.5; }
+  .dark .stamp{ color:rgba(241,238,231,.5); }
+  h1{ font-weight:900; text-transform:uppercase; letter-spacing:-.04em; line-height:.86; }
+  .xl{ font-size:clamp(2.6rem,8vw,7rem); }
+  .lg{ font-size:clamp(2rem,6vw,4.5rem); }
+  .md{ font-size:clamp(1.5rem,4vw,3rem); }
+  .sub{ font-size:clamp(1.05rem,2vw,1.6rem); line-height:1.5; color:rgba(10,10,10,.65); max-width:46ch; }
+  .dark .sub{ color:rgba(241,238,231,.72); }
+  .gold{ color:var(--ink); background:var(--gold); padding:0 .18em; border-radius:.12em; }
+  .mono{ font-family:'JetBrains Mono',monospace; }
+  .grid{ display:grid; gap:28px 40px; }
+  .g3{ grid-template-columns:repeat(3,1fr); } .g2{ grid-template-columns:repeat(2,1fr); }
+  @media(max-width:760px){ .g3,.g2{ grid-template-columns:1fr; } }
+  .card{ border-top:2px solid var(--ink); padding-top:18px; }
+  .dark .card{ border-color:var(--gold); }
+  .card .n{ font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.2em; color:var(--gold); }
+  .card .h{ font-weight:800; font-size:clamp(1.4rem,2.4vw,1.9rem); letter-spacing:-.02em; margin-top:8px; line-height:1.05; }
+  .card .b{ font-size:15px; line-height:1.55; color:rgba(10,10,10,.62); margin-top:8px; max-width:38ch; }
+  .dark .card .b{ color:rgba(241,238,231,.66); }
+  .big{ font-weight:900; letter-spacing:-.03em; font-size:clamp(2.4rem,6vw,5rem); line-height:1; }
+  .row{ display:flex; align-items:baseline; justify-content:space-between; padding:16px 0; border-top:1px solid rgba(10,10,10,.14); max-width:680px; }
+  .row.hot{ border-color:var(--ink); } .row .who{ font-size:clamp(1.1rem,2.4vw,1.8rem); font-weight:500; color:rgba(10,10,10,.6); }
+  .row.hot .who{ font-weight:800; color:var(--ink); }
+  .row .v{ font-family:'JetBrains Mono',monospace; font-size:clamp(1.1rem,2.6vw,2rem); color:rgba(10,10,10,.55); }
+  .row.hot .v{ font-weight:900; color:var(--ink); background:var(--gold); padding:2px 10px; border-radius:8px; }
+  .lines{ display:flex; flex-direction:column; gap:6px; font-size:clamp(1.1rem,2vw,1.5rem); color:rgba(10,10,10,.7); margin-top:18px; }
+  .dark .lines{ color:rgba(241,238,231,.75); }
+  .pill{ display:inline-flex; align-items:center; gap:8px; border:1px solid rgba(10,10,10,.18); border-radius:999px; padding:8px 16px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:rgba(10,10,10,.6); }
+  .dark .pill{ border-color:rgba(241,238,231,.25); color:rgba(241,238,231,.7); }
+  .dot{ width:8px; height:8px; border-radius:50%; background:var(--gold); animation:p 1.6s infinite; } @keyframes p{50%{opacity:.3}}
+  .pg{ position:fixed; bottom:18px; right:22px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.2em; color:rgba(241,238,231,.4); z-index:50; }
+  .hint{ position:fixed; bottom:18px; left:22px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em; color:rgba(241,238,231,.35); z-index:50; }
+  ul.clean{ list-style:none; display:flex; flex-direction:column; gap:12px; margin-top:22px; max-width:52ch; }
+  ul.clean li{ display:flex; gap:12px; font-size:clamp(1rem,1.9vw,1.35rem); line-height:1.4; }
+  ul.clean li::before{ content:""; margin-top:.6em; width:7px; height:7px; border-radius:50%; background:var(--gold); flex:0 0 auto; }
+  a{ color:inherit; }
+</style>
+</head>
+<body>
+<div class="pg" id="pg">01</div>
+<div class="hint">↓ scroll / setas</div>
+<div class="deck" id="deck">
+
+  <!-- 01 · TITLE -->
+  <section class="s bone">
+    <div class="stamp l">vineland · pulso hackathon · stellar</div>
+    <h1 class="xl" style="margin-top:28px; max-width:15ch;">O cofrinho<br>que rende.</h1>
+    <p class="sub" style="margin-top:28px;">Uma conta em dólar, dentro do Pix, que <b>rende</b> — e que ninguém congela. Você recebe, guarda e rende em dólar. As chaves são suas.</p>
+    <div style="margin-top:34px;" class="pill"><span class="dot"></span> live · mainnet stellar · non-custodial</div>
+  </section>
+
+  <!-- 02 · PROBLEM -->
+  <section class="s bone2">
+    <div class="stamp l">o problema</div>
+    <h1 class="lg" style="margin-top:24px; max-width:18ch;">O real encolhe. O dólar é caro e travado.</h1>
+    <div class="grid g3" style="margin-top:48px;">
+      <div class="card"><div class="n">01</div><div class="h">A poupança perde</div><div class="b">O real corrói o poder de compra. Proteger-se em dólar virou necessidade, não luxo.</div></div>
+      <div class="card"><div class="n">02</div><div class="h">Custódia congela</div><div class="b">Banco e fintech seguram, bloqueiam — ou são hackeados. O dinheiro fica no balanço deles, não na sua mão.</div></div>
+      <div class="card"><div class="n">03</div><div class="h">Spread escondido</div><div class="b">O dólar do banco/corretora custa ~5% (IOF + spread oculto) e volta em dias.</div></div>
+    </div>
+  </section>
+
+  <!-- 03 · MARKET -->
+  <section class="s dark">
+    <div class="stamp l">o mercado · já se movendo</div>
+    <h1 class="lg" style="margin-top:24px; max-width:16ch;">Não é tese. É fluxo.</h1>
+    <div class="grid g2" style="margin-top:44px; max-width:1000px;">
+      <div class="card"><div class="big">US$ 6,8 bi</div><div class="b">stablecoin comprada por brasileiros no Q1 2026 — 98% de todo cripto-no-exterior, +100% a/a.</div></div>
+      <div class="card"><div class="big">100 mi+</div><div class="b">brasileiros com acesso a USDC via Nubank. 25% dos novos escolhem USDC como 1ª compra.</div></div>
+      <div class="card"><div class="big">90%</div><div class="b">do volume Pix→cripto é stablecoin (USDT/USDC). a demanda é massa, não nicho.</div></div>
+      <div class="card"><div class="big">USDC no Pix</div><div class="b">o Banco Central integrou USDC ao Pix (2026). o trilho existe no nível do regulador.</div></div>
+    </div>
+  </section>
+
+  <!-- 04 · PRODUCT -->
+  <section class="s bone">
+    <div class="stamp l">o produto</div>
+    <h1 class="lg" style="margin-top:24px; max-width:18ch;">Recebe. Rende. Seu.</h1>
+    <div class="grid g3" style="margin-top:48px;">
+      <div class="card"><div class="n">receberpix</div><div class="h">Gire a chave Pix</div><div class="b">Todo Pix que cair vira dólar na sua carteira — automático, na hora. Receber já é ter dólar.</div></div>
+      <div class="card"><div class="n">cofrinho</div><div class="h">Deixe rendendo</div><div class="b">Um toque transforma o dólar parado em dólar que rende. A metáfora do cofrinho, real.</div></div>
+      <div class="card"><div class="n">soberania</div><div class="h">Biometria, sem seed</div><div class="b">A digital assina cada movimento. Non-custodial: ninguém congela o que a gente não toca.</div></div>
+    </div>
+  </section>
+
+  <!-- 05 · WEDGE / ATTACK -->
+  <section class="s dark">
+    <div class="stamp l">a diferença</div>
+    <h1 class="xl" style="margin-top:24px; max-width:14ch;">Eles seguram.<br>A gente não.</h1>
+    <p class="sub" style="margin-top:28px;">Todo incumbente compartilha a mesma ferida: <b>custódia + congelamento + spread escondido</b>. Os players de pagamento-de-agente (Skyfire, Kite, Catena) não tocam Pix/BRL. As infra-fintechs (Trace, BlindPay) são dev-only, sem marca, sem gosto.</p>
+    <p class="sub" style="margin-top:18px;"><span class="gold">Vineland é o único</span> com on/off-ramp Pix↔USDC + biometria + design — e CNPJ real (66.381.800/0001-08), com recibo on-chain de cada conversão.</p>
+  </section>
+
+  <!-- 06 · MONEY -->
+  <section class="s bone2">
+    <div class="stamp l">como ganha dinheiro</div>
+    <h1 class="lg" style="margin-top:24px;">A margem que sobrevive.</h1>
+    <ul class="clean">
+      <li><b>0,98% na conversão</b> — vivo na mainnet. ~99% de margem no leg de conversão. é a isca de aquisição.</li>
+      <li><b>spread sobre float (yield)</b> — modelo Tether/Bridge/Littio: T-bill ~5-6%, repassa, fica com 2-4 pontos. US$ 10 mi parados = <b>~US$ 300 mil/ano recorrente</b>, sem depender de volume.</li>
+      <li><b>payout B2B Pix→USDC</b> — "0% até R$X" (modelo BlindPay: US$ 900 mil → US$ 450 mi TPV em 14 meses). <b>é aqui o dinheiro grande.</b></li>
+    </ul>
+    <p class="sub" style="margin-top:22px; font-size:1rem; color:var(--gray);">Morto, evitado: rail take-rate puro (~US$ 26/dia no setor), fee de x402 (US$ 0), mensalidade SaaS. Não apostamos no que está commoditizado a zero.</p>
+  </section>
+
+  <!-- 07 · FEE ANCHOR -->
+  <section class="s bone">
+    <div class="stamp l">a conta limpa</div>
+    <h1 class="lg" style="margin-top:24px;">Você fica com a diferença.</h1>
+    <div style="margin-top:40px;">
+      <div class="row"><span class="who">Banco / corretora</span><span class="v">~5%</span></div>
+      <div class="row"><span class="who">Outras fintechs</span><span class="v">~1,5%</span></div>
+      <div class="row hot"><span class="who">Vineland</span><span class="v">0,98%</span></div>
+    </div>
+    <p class="sub" style="margin-top:24px;">Taxa travada na confirmação. Sem mensalidade, sem letra miúda, sem carry escondido.</p>
+  </section>
+
+  <!-- 08 · LIVE / PROOF -->
+  <section class="s dark">
+    <div class="stamp l">o que já está no ar</div>
+    <h1 class="lg" style="margin-top:24px; max-width:16ch;">Não acredite. Verifique.</h1>
+    <div class="grid g3" style="margin-top:44px;">
+      <div class="card"><div class="h">Mainnet Stellar</div><div class="b mono" style="word-break:break-all;">contrato CCT3KJXR…P6FIKUF · charges reais · 0,98% · liquida em segundos</div></div>
+      <div class="card"><div class="h">Biometria viva</div><div class="b">passkey on-chain (primitiva da SDF). pagar com a digital, sem seed phrase.</div></div>
+      <div class="card"><div class="h">Recibo auditável</div><div class="b">cada conversão deixa prova on-chain. o juiz verifica o endereço, não a minha palavra.</div></div>
+    </div>
+    <div style="margin-top:34px;" class="pill"><span class="dot"></span> ao vivo · mainnet · app.vineland.cc</div>
+  </section>
+
+  <!-- 09 · STELLAR / x402 -->
+  <section class="s bone2">
+    <div class="stamp l">stellar + x402</div>
+    <h1 class="lg" style="margin-top:24px; max-width:18ch;">No trilho que a SDF subsidia.</h1>
+    <ul class="clean">
+      <li><b>x402-on-Stellar</b> — facilitator grátis da SDF, ~5s de finalidade, fees patrocinados. quando a SDF paga o trilho, o spread fica ~100% de margem.</li>
+      <li><b>autoridade provada</b> — pagamento de agente que carrega prova de que ficou dentro das regras do dono. preenche a reclamação nº1 dos builders: "pagamento enviado ≠ autorizado e limitado".</li>
+      <li><b>dinheiro hoje vs próximos 10 anos</b> — receberPix é a receita de hoje; x402/agente é a opção de futuro. lideramos com dinheiro hoje.</li>
+    </ul>
+  </section>
+
+  <!-- 10 · TRACTION / FALSIFIABLE -->
+  <section class="s bone">
+    <div class="stamp l">tração · 10 dias</div>
+    <h1 class="lg" style="margin-top:24px; max-width:18ch;">Customer discovery, não vaidade.</h1>
+    <p class="sub" style="margin-top:26px;">10 entrevistas reais durante o hackathon: "você moveria R$X da poupança pra um cofrinho-dólar que rende?" + micro-merchants/PJ que recebem do exterior.</p>
+    <p class="sub" style="margin-top:18px;"><b>Hipótese falsificável:</b> o gancho <span class="gold">cofrinho-dólar que rende</span> ressoa <b>≥ 3:1</b> vs pagamento-de-agente (medido por quem pede pra entrar na waitlist). se não, a tese de receita está errada — e a gente revisa antes de construir mais.</p>
+  </section>
+
+  <!-- 11 · ASK / CLOSE -->
+  <section class="s dark">
+    <div class="stamp l">por que nós</div>
+    <h1 class="xl" style="margin-top:24px; max-width:13ch;">Construído.<br>No ar. Provável.</h1>
+    <div class="lines" style="margin-top:28px;">
+      <span>Fundador solo. Mainnet viva. CNPJ real.</span>
+      <span>Feijão com arroz — nada inventado, tudo provado, montado com gosto.</span>
+      <span>O cofrinho-dólar que rende, dentro do Pix. Seu, do seu jeito.</span>
+    </div>
+    <div style="margin-top:40px; display:flex; gap:14px; flex-wrap:wrap;">
+      <span class="pill">app.vineland.cc</span>
+      <span class="pill">/cofrinho · /receber</span>
+      <span class="pill">non-custodial · biometria</span>
+    </div>
+  </section>
+
+  <!-- 12 · SOURCES / HONESTY -->
+  <section class="s bone2">
+    <div class="stamp l">honestidade · fontes</div>
+    <h1 class="md" style="margin-top:24px; max-width:24ch;">O que é live, mercado e roadmap.</h1>
+    <ul class="clean" style="max-width:64ch;">
+      <li><b>Live (verificável agora):</b> contrato mainnet Stellar, 0,98%, biometria passkey, recibo on-chain.</li>
+      <li><b>Mercado (pesquisa Exa, conferir no pitch final):</b> US$ 6,8 bi Q1, Nubank 100M, 90% Pix-cripto, comps Littio/BlindPay/Tether.</li>
+      <li><b>Roadmap (não live):</b> yield real (precisa de parceiro licenciado + advogado), payout B2B, on-ramp Pix→USDC pela chain certa (4P liquida Base/Solana, não Stellar).</li>
+      <li><b>Não pitchamos:</b> cross-border (Res BCB 561), "zero IOF", rail take-rate como negócio.</li>
+    </ul>
+  </section>
+
+</div>
+<script>
+  var deck=document.getElementById('deck'), pg=document.getElementById('pg'), secs=document.querySelectorAll('.s');
+  function upd(){ var i=Math.round(deck.scrollTop/window.innerHeight)+1; pg.textContent=String(i).padStart(2,'0')+' / '+String(secs.length).padStart(2,'0'); }
+  deck.addEventListener('scroll',upd); upd();
+  document.addEventListener('keydown',function(e){
+    var i=Math.round(deck.scrollTop/window.innerHeight);
+    if(e.key==='ArrowDown'||e.key==='ArrowRight'||e.key===' '){ e.preventDefault(); deck.scrollTo({top:(i+1)*window.innerHeight,behavior:'smooth'}); }
+    if(e.key==='ArrowUp'||e.key==='ArrowLeft'){ e.preventDefault(); deck.scrollTo({top:(i-1)*window.innerHeight,behavior:'smooth'}); }
+  });
+</script>
+</body>
+</html>

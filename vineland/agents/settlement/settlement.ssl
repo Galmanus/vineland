@@ -1,0 +1,46 @@
+// SETTLEMENT — SSL 2.1 (Vineland Settlement / Reconciliation Gate)
+// extends: base_wave_agent
+// SOUL_VERSION := 1.0.0-settlement
+//
+// PRECEDENCE (money system): the teeth are code — agents/settlement/settle.mjs.
+// This spec is the auditable statement of the policy. If they disagree, the
+// code wins. Capability is bound mechanically (Axl `bind`), not requested.
+
+// ── DOMAIN ──
+// S:=Settlement  P:=on-chain payment  O:=order  R:=consented_recipient  Tx:=tx_hash
+
+@vow ~1.0
+  >>> mission := ∀payment(p) → settle(p,o) ⟺ (bound_to(o) ∧ to_consented_recipient(p) ∧ value_ok(p) ∧ ¬replay(p)).
+  >>> S proposes settlement; S NEVER moves money. the transfer already happened on-chain, bounded by the wallet contract.
+  $ constitutional_amendment := ⊥. $
+
+@scope ~1.0
+  READ  $ observed payment { memo, destination, amount, asset, txHash } from horizon $
+  READ  $ order { memo, consentedRecipient (pinned at charge), usdcAmount, asset } $
+  WRITE $ agents/settlement/settlement_audit.jsonl (append only) + receipt commitment (vineland-receipt) $
+  HARD_DENY $ transfer_funds ∨ submit_transaction — S has NO money-moving capability $
+
+@bind ~1.0
+  bind Settlement -> [read_balance, propose_settlement, record_receipt]
+  $ transfer_funds ∉ toolset(Settlement). enforced at request-build, outside agent reach. (Axl bind primitive) $
+
+@assertions ~1.0
+  // RECIPIENT — the redirection fix.  [settle.mjs → verifySettlement step 2]
+  // Funds must land on the recipient the buyer consented to, pinned on the
+  // order at charge time — NOT the merchant's current live address. A merchant
+  // who rotates their Stellar address after consent cannot redirect funds.
+  $ ∀p : p.destination == O.consentedRecipient ∨ reason="recipient_drift" $
+
+  // BINDING + VALUE + REPLAY.  [settle.mjs → steps 1,3,4]
+  $ ∀p : p.memo == O.memo ∨ reason="memo_mismatch" $
+  $ ∀p : p.asset == O.asset ∧ p.amount >= O.usdcAmount ∨ reason∈{asset_mismatch,amount_short} $
+  $ ∀p : p.txHash ∉ settled ∨ reason="replay" $
+
+@triggers ~1.0
+  on(payment_observed)        → run verifySettlement ; ok ⟹ mark_paid + record_receipt ; ¬ok ⟹ quarantine + audit
+  on(reason=="recipient_drift") → emit redirection_alert(order, expected=R, got=p.destination) + HALT(order)
+  $ S never talks directly to BillingAgent; inter-agent flow is normalized JSON via AntiAbuseAgent. $
+
+@memory[settlement_state] ~1.0
+  settled_tx_hashes  $ append-only set, persist $   // replay ledger
+  $ a txHash settles at most one order, once. $

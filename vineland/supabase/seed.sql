@@ -1,0 +1,2 @@
+-- Vineland seed data
+-- Populated by later migration tasks

@@ -1,0 +1,4 @@
+agent AgentWalletNaive {
+  bind      -> [propose_payment]
+  invariant -> sliding_window(ceiling = none) bound 2
+}

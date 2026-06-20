@@ -1,0 +1,32 @@
+# heavy / regenerable
+node_modules/
+**/target/
+*.ptau
+*.zkey
+*.wtns
+*.wasm
+*.r1cs
+*.sym
+*_js/
+# separate upstream clones (their own repos)
+ref-ultrahonk/
+ref-risc0/
+ref-bn254/
+ref-soroban-examples/
+ref-elgamal/
+# keep: circuits/, contract/src, *.circom, vk*.json, proof*.json, public*.json, input*.json, *.sh, *.md, Dockerfile.prover
+
+# real-batch private witness (amounts+recipients) — never commit
+build_real/input.json
+build_real/*.wtns
+/tmp/real_orders.json
+
+# shadow attester: private witnesses; keep attestations.jsonl + public proofs
+build_attest/*/input.json
+build_attest/*/*.wtns
+/tmp/all_orders.json
+/tmp/all_merchants.json
+
+# KYC circuit private witnesses (birthYear, sanctionId, secrets)
+build_kyc/input*.json
+build_kyc/*.wtns

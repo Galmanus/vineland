@@ -1,0 +1,6 @@
+agent Settlement {
+  bind      -> [read_balance, propose_settlement]
+  constrain -> SettlementDecision
+  prove     -> decision.amount <= account.balance
+  prove     -> decision.recipient in account.allowlist
+}

@@ -1,0 +1,28 @@
+# Fly.io config for vineland-listener (testnet/staging)
+# Deploy: cd apps/listener && flyctl deploy
+# Secrets: flyctl secrets set SUPABASE_SERVICE_ROLE_KEY=... SUPABASE_URL=...
+
+app = "vineland-listener-staging"
+primary_region = "gru"           # São Paulo
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  STELLAR_NETWORK = "TESTNET"
+  MERCHANT_POLL_MS = "30000"
+  NODE_ENV = "production"
+
+[processes]
+  app = "node dist/main.js"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"
+  cpus = 1
+
+# Listener has no HTTP surface; no [[services]] block.
+# Keep one machine running 24/7 — auto_stop disabled.
+[[restart]]
+  policy = "always"
+  max_restarts = 10

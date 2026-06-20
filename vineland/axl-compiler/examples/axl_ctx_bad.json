@@ -1,0 +1,4 @@
+{
+  "decision": { "action": "orchestrate_harm", "dimensions_touched": 1 },
+  "account":  { "allowed_actions": ["read_context", "draft_counsel", "run_premortem"] }
+}

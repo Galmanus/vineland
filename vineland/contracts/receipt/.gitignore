@@ -1,0 +1,3 @@
+target/
+.testnet-deploy.env
+*.mainnet-deploy.env

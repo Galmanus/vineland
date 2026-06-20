@@ -1,0 +1,79 @@
+# Vineland full stack via Docker.
+#
+# Usage:
+#   cp .env.docker.example .env.docker
+#   docker compose --env-file .env.docker up --build
+#
+# Services:
+#   web      — nginx serving the Vite SPA bundle (port 5173)
+#   api      — Deno runtime serving the Hono Edge Function clone (port 8000)
+#   listener — Node container streaming Horizon SSE + delivering webhooks
+#
+# Supabase Postgres + Auth + Studio are NOT in this compose file. Run them
+# locally via `supabase start` (the Supabase CLI manages its own Docker stack)
+# OR point SUPABASE_URL/keys at a hosted Supabase project.
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: supabase/functions/api/Dockerfile
+    environment:
+      SUPABASE_URL: ${SUPABASE_URL}
+      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
+      VINELAND_DB_SCHEMA: ${VINELAND_DB_SCHEMA:-vineland}
+      CHECKOUT_BASE_URL: ${CHECKOUT_BASE_URL:-http://localhost:5173}
+      RATE_BRL_USDC: ${RATE_BRL_USDC:-}
+    ports:
+      - "${API_PORT:-8000}:8000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8000/api/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 15s
+    networks: [vineland]
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL}
+        VITE_SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY}
+        VITE_API_BASE: ${VITE_API_BASE:-http://localhost:8000/api}
+        VITE_STELLAR_NETWORK: ${VITE_STELLAR_NETWORK:-TESTNET}
+        VITE_PLATFORM_ADDRESS: ${VITE_PLATFORM_ADDRESS}
+    ports:
+      - "${WEB_PORT:-5173}:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    networks: [vineland]
+
+  listener:
+    build:
+      context: .
+      dockerfile: apps/listener/Dockerfile
+    environment:
+      SUPABASE_URL: ${SUPABASE_URL}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
+      VINELAND_DB_SCHEMA: ${VINELAND_DB_SCHEMA:-vineland}
+      STELLAR_NETWORK: ${STELLAR_NETWORK:-TESTNET}
+      MERCHANT_POLL_MS: ${MERCHANT_POLL_MS:-30000}
+      NODE_ENV: production
+    restart: unless-stopped
+    networks: [vineland]
+    depends_on:
+      api:
+        condition: service_healthy
+
+networks:
+  vineland:
+    driver: bridge

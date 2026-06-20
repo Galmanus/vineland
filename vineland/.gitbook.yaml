@@ -1,0 +1,8 @@
+# GitBook GitHub sync config.
+# Docs live under docs/. The OpenAPI spec (docs/openapi.yaml) is wired into
+# the API Reference via GitBook's OpenAPI block / "Add specification".
+root: ./docs/
+
+structure:
+  readme: README.md
+  summary: SUMMARY.md

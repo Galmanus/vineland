@@ -1,0 +1,43 @@
+{
+  "contract": "CCPIR4DNAUGOSIWZXC4JQCIIDKVAWM632J7KXCZWGD6IZPLL7XN7IERQ",
+  "network": "testnet",
+  "generated_at": "2026-06-03T13:13:55Z",
+  "harness": "vineland_contract_redteam.sh",
+  "findings": [
+    {
+      "attack": "CONTROL: valid attested charge settles",
+      "result": "HELD",
+      "detail": "valid attestation accepted (gate is functional, not deny-all)"
+    },
+    {
+      "attack": "A1 double-charge within period",
+      "result": "HELD",
+      "detail": "PeriodNotElapsed \u2014 rejected"
+    },
+    {
+      "attack": "A3 attested charge without attester bound",
+      "result": "HELD",
+      "detail": "AttesterNotSet \u2014 rejected"
+    },
+    {
+      "attack": "A4 forged attestation (wrong signer)",
+      "result": "HELD",
+      "detail": "ed25519_verify trap \u2014 rejected"
+    },
+    {
+      "attack": "A5 expired attestation",
+      "result": "HELD",
+      "detail": "AttestationExpired \u2014 rejected"
+    },
+    {
+      "attack": "A6 cross-sub attestation replay",
+      "result": "HELD",
+      "detail": "sub-bound message \u2014 rejected"
+    }
+  ],
+  "summary": {
+    "held": 6,
+    "broke": 0,
+    "verdict": "all invariants held under attack"
+  }
+}
