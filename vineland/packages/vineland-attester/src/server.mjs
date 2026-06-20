@@ -15,6 +15,7 @@
 import { createServer } from "node:http";
 import { sha256 } from "@noble/hashes/sha256";
 import { commitSurface, attest, verifyAttestation, publicKeyHex, hexToBytes } from "./oracle.mjs";
+import { attestProof, verifyAttestationDoc } from "./zkattest.mjs";
 
 const PORT = Number(process.env.PORT || 8790);
 const priv = process.env.VINELAND_ATTESTER_SECRET
@@ -33,6 +34,15 @@ const server = createServer(async (req, res) => {
       return json(res, v.ok ? 200 : 403, v); // 403 when the agent is refused — fail-closed
     }
     if (req.method === "POST" && req.url === "/verify") return json(res, 200, await verifyAttestation(await body(req)));
+    // ── ZK compliance attestation (the product) ──
+    // POST /attest-proof {kind:"kyc"|"mandate", invoke_args, public_signals?, subject_ref?}
+    //   → verifies the proof on the LIVE mainnet verifier, returns a signed attestation.
+    if (req.method === "POST" && req.url === "/attest-proof") {
+      const v = await attestProof(await body(req), priv);
+      return json(res, v.ok ? 200 : 422, v); // 422 when the proof does not verify on-chain — fail-closed
+    }
+    // POST /verify-attestation {attestation, signature, pubkey} → { valid } (offline, no chain call)
+    if (req.method === "POST" && req.url === "/verify-attestation") return json(res, 200, await verifyAttestationDoc(await body(req)));
     json(res, 404, { error: "not found" });
   } catch (e) { json(res, 400, { error: String(e?.message ?? e) }); }
 });
