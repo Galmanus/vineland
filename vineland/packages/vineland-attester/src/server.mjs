@@ -16,6 +16,7 @@ import { createServer } from "node:http";
 import { sha256 } from "@noble/hashes/sha256";
 import { commitSurface, attest, verifyAttestation, publicKeyHex, hexToBytes } from "./oracle.mjs";
 import { attestProof, verifyAttestationDoc } from "./zkattest.mjs";
+import { buildComplianceReceipt } from "./compliance_receipt.mjs";
 
 const PORT = Number(process.env.PORT || 8790);
 const priv = process.env.VINELAND_ATTESTER_SECRET
@@ -43,6 +44,12 @@ const server = createServer(async (req, res) => {
     }
     // POST /verify-attestation {attestation, signature, pubkey} → { valid } (offline, no chain call)
     if (req.method === "POST" && req.url === "/verify-attestation") return json(res, 200, await verifyAttestationDoc(await body(req)));
+    // POST /compliance-receipt {mandate_id, period_index, invoke_args, public_signals?, anchor?}
+    //   → attests the mandate proof on mainnet, builds a receipt, optionally anchors on-chain.
+    if (req.method === "POST" && req.url === "/compliance-receipt") {
+      const v = await buildComplianceReceipt(await body(req), priv);
+      return json(res, v.ok ? 200 : 422, v);
+    }
     json(res, 404, { error: "not found" });
   } catch (e) { json(res, 400, { error: String(e?.message ?? e) }); }
 });
