@@ -119,9 +119,12 @@ vineland/apps, sdk                product surface: SDK for integrators, dashboar
 - **Phase 2 — confidential settlement.** Wire the behavioral cloak's `execute`
   (already moves value from the vault) to a confidential-amount proof, so amount and
   recipient are hidden while the payout stays unlinkable.
-- **Phase 3 — selective disclosure.** The M-of-N committee (already built in
-  riverrun) holds the regulator-disclosure key by threshold: lawful disclosure
-  requires a quorum, not a single key.
+- **Phase 3 — selective disclosure.** *(built.)* The M-of-N committee holds the
+  regulator-disclosure key by threshold (Shamir-shared ElGamal over Baby Jubjub):
+  lawful disclosure requires a quorum, not a single key, so no single party — not
+  even the operator — can de-anonymize. Proven in `vineland-zk/threshold_disclosure.js`:
+  any 2-of-3 quorum recovers the disclosed value, a lone member cannot. Classical
+  (Baby Jubjub), trusted-dealer sharing; full DKG + PQ port are roadmap.
 - **Phase 4 — the ruler as the trust/compliance API + SDK for integrators.**
 
 ## Honest risks
