@@ -30,3 +30,4 @@ build_attest/*/*.wtns
 # KYC circuit private witnesses (birthYear, sanctionId, secrets)
 build_kyc/input*.json
 build_kyc/*.wtns
+*.ptau
