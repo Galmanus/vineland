@@ -1,153 +1,132 @@
 # Vineland
 
-**A non-custodial dollar layer for Brazil, built on a privacy stack strong enough
-to license.** Receive, hold, and grow dollars (USDC) straight from Pix, no bank in
-the middle, and prove every payment is compliant without broadcasting it to the
-world. The money lives in your own wallet, moved only by your biometrics. Nobody
-can freeze it, because nobody custodies it.
-
-Built on Stellar. Live on mainnet, not a pitch deck: a Groth16 verifier confirming
-real compliance proofs today, and a post-quantum identity primitive proved portable
-to the same chain this week.
+**Vineland is riverrun, productized.** [riverrun](https://github.com/solanabr/mirror-pool)
+is the post-quantum anonymity layer (Superteam Brasil "Noise" bounty, 2026): one
+hash-based secret, a different unlinkable face at every context, no elliptic curves,
+no trusted setup, measured not claimed. riverrun stays the tech, open, MIT, research-
+grade. Vineland is the business built on top of it: metering, attesting, and billing
+for the anonymized action riverrun produces.
 
 The name is from Thomas Pynchon's *Vineland*: a refuge that stays its own.
 
 ---
 
-## Why
+## The one line
 
-Brazilians want dollars, protection from a currency that erodes, but the path
-today costs ~5% (IOF plus hidden FX spread), takes days, and runs through
-custodial accounts that can freeze or close. Vineland makes the dollar arrive in
-minutes, at a transparent fee, in a wallet only you control.
+**Charge the protocol a per-action fee to embed a riverrun anonymity attestation, not
+the user a fee to anonymize money.** Same per-transaction billing shape a mixer uses;
+a different object; the opposite legal exposure. Selling infrastructure (a signed
+attestation, metered like an API call) is a SaaS/verifier sale. Taking a cut of value
+moved is money transmission (Res BCB 561 in Brazil, and the reason Tornado Cash's
+operators were prosecuted). Vineland sits on the clean side of that line on purpose.
 
-## What it does
+Full spec: [`vineland/SKU_ANONYMIZED_ACTION_METERING.md`](./vineland/SKU_ANONYMIZED_ACTION_METERING.md).
 
-- **Receive in dollars.** Point your Pix key once; every incoming Pix becomes USDC
-  in your wallet.
-- **Hold and grow.** Keep dollars inside Pix; idle balance can earn, framed against
-  a savings account that shrinks instead.
-- **Pay and B2B payout.** Send and receive abroad, settle in minutes at a
-  transparent fee, via API for marketplaces and companies.
-- **Biometric, no seed phrase.** A passkey wallet: your face or fingerprint signs,
-  nothing to memorize, nothing to lose.
-- **Provable bounded autonomy.** An AI agent can pay your bills only inside the
-  rules you set, and prove on-chain it obeyed, without revealing amounts or
-  recipients.
+## What is billed, and to whom
 
-## What makes it hard to copy: the privacy stack underneath
+| | mixer take-rate (the trap) | anonymized-action attestation (this business) |
+|---|---|---|
+| billed event | user withdraws value | protocol facilitates an anonymized action |
+| payer | the user mixing money | the dApp/protocol integrating riverrun ID |
+| object | value transferred | a signed anonymity attestation (the AXL cert) |
+| custody | yes | none |
+| moat | being the pool | being the standard the cert is issued against |
 
-A payment rail is easy to clone. What is not easy to clone is proving, on a
-permanent public ledger, that a payment obeyed the rules without ever putting the
-amount, the counterparty, or the actor's identity on that ledger, and doing it in a
-way that survives both a regulator's audit and a quantum computer. Vineland's
-privacy layer is two pieces, at two different levels of maturity, honestly labeled.
+The buyer is a protocol that needs a credible, neutral anonymity guarantee to show
+its users or a regulator: privacy-pool successors, compliant-privacy apps, anonymous-
+vote / airdrop / reputation dApps. They embed riverrun ID and pay per attested action
+for a portable cert that proves the anonymity floor actually held, not just that
+something was hashed.
 
-### Live today: confidential compliance (`vineland-zk`)
+The billable event is a counter that already exists: riverrun's on-chain nullifier
+registry increments once per anonymized action. Metering is reading a counter.
 
-A Groth16 proof that a batch of payments stayed inside a mandate, per-payment cap,
-monthly cap, allowlist, with the monthly total encrypted to a regulator's key so
-only lawful authority can ever decrypt it. Not a demo number: a real proof
-verifying on **Stellar mainnet** today.
+## The number (honest, comped)
 
-- **Mainnet verifier, live:** [`CBDS2YSLATINQVUDG5Y5HV4KQBEAVFDRPEINVEUTYSX3CZZQKBY5U3FE`](https://stellar.expert/explorer/public/contract/CBDS2YSLATINQVUDG5Y5HV4KQBEAVFDRPEINVEUTYSX3CZZQKBY5U3FE),
-  `verify(real proof) = true`, ~44.6M instructions, 11% of budget.
-- A second circuit proves KYC (registered, of-age, non-sanctioned) with zero PII
-  revealed, also live on mainnet.
-- Selective disclosure is threshold-held: a 2-of-3 quorum of committee keys
-  recovers a disclosed value, no single party, not even the operator, can
-  de-anonymize alone. Proven in `vineland-zk/threshold_disclosure.js`.
-- Honest boundary: this layer is classical (Groth16/BN254, ElGamal over Baby
-  Jubjub), quantum-breakable, and needs a trusted setup. It hides *how much* and
-  *to whom*. It does not hide *who acted*, and it is not post-quantum. Both
-  statements are load-bearing, not hedges.
+Meter at **$0.005 per attested anonymized action**. One integrating app at 100M
+actions/month = **$500K/month**, marginal cost per attestation ≈ 0. This is a comp,
+not a promise, worth exactly $0 until a real protocol integrates and has volume, same
+as every projection below it.
 
-### Proved portable this week: the identity layer (`vineland-stellar`)
+**Falsifiable gate, 90 days from 2026-07-25:** ≥1 protocol integrates riverrun ID and
+meters ≥1 real paid attested action through Vineland. Below that, this is a thesis,
+not a business, and the honest fallback is the audit pilot (next section).
 
-The confidential layer above hides amounts and counterparties, but the actor
-signing the transaction is still one fixed, linkable account. `riverrun-id-wasm`
-is the other half: the rotatable-piece identity primitive from
-[riverrun](https://github.com/solanabr/mirror-pool), Vineland's author's
-post-quantum anonymity layer built for Solana, one hash-based secret that
-presents a different, unlinkable face at every context, with holder-only
-rotation, scoped delegation, and selective credentials, all built from BLAKE3
-domain separation, no elliptic curves, no trusted setup.
+## The bridge, live today
 
-This week it was proved chain-agnostic, not just argued to be: it compiles
-`no_std` to `wasm32-unknown-unknown`, the exact target Soroban contracts run on.
-Real artifact, not a claim: `target/wasm32-unknown-unknown/debug/libriverrun_id_wasm.rlib`,
-7 tests green. See `vineland-stellar/riverrun-id-wasm/README.md` for exactly what
-is proved and what is still ahead (a real Soroban contract, an on-chain nullifier
-registry, one live integration): named precisely, nothing rounded up.
+The rail above needs an integrator; the audit does not.
+[`vineland/OFFER_FLOW_PRIVACY_PILOT_5K.md`](./vineland/OFFER_FLOW_PRIVACY_PILOT_5K.md)
+is a $4,997 fixed-price, 5-day deanonymization audit of a fund or whale's real on-chain
+flow, run with the same tooling riverrun's `provenance-tracer` uses on mainnet, plus
+the design for closing what it finds. This is service revenue, capped by attention,
+and it pays for the wait while the meter above has zero integrators. It is the bridge,
+not the destination:
+[`vineland/POSITIONING_PLAN.md`](./vineland/POSITIONING_PLAN.md) names that split and
+its own honest failure modes (bridge revenue is mandatory, not optional; a take-rate
+on settled *volume*, its earlier, broader framing of "the rail," runs straight into
+the money-transmission line this SKU exists to route around).
 
-### The two together, and why neither Stellar privacy tool ships this today
+## What's live, not a pitch deck
 
-Stellar's own privacy stack, Confidential Tokens (OpenZeppelin/Nethermind, June
-2026) and Stellar Private Payments (Nethermind), each hide *how much*. Neither
-ships a reusable per-context identity primitive other contracts could build an
-anonymous vote, a sybil-resistant airdrop, or a KYC-gated join on top of, and
-both are curve-based with a trusted-setup dependency, not post-quantum. Vineland
-is positioned to be the party that ships both halves, hide how much (live,
-classical, mainnet-proven) and hide who (proved portable, post-quantum,
-integration ahead), on the chain that currently has neither combined.
+### `vineland-zk`: confidential compliance, on Stellar mainnet
 
-## Architecture
+A Groth16 proof that a batch of payments stayed inside a mandate, cap, and allowlist,
+with the total encrypted to a regulator's key. Real proof, verifying today.
+
+- Mainnet verifier: [`CBDS2YSLATINQVUDG5Y5HV4KQBEAVFDRPEINVEUTYSX3CZZQKBY5U3FE`](https://stellar.expert/explorer/public/contract/CBDS2YSLATINQVUDG5Y5HV4KQBEAVFDRPEINVEUTYSX3CZZQKBY5U3FE),
+  ~44.6M instructions, 11% of budget.
+- A second circuit proves KYC (registered, of-age, non-sanctioned), zero PII, also
+  live on mainnet.
+- Selective disclosure is threshold-held: a 2-of-3 committee quorum recovers a
+  disclosed value, no single party alone. Proven in `vineland-zk/threshold_disclosure.js`.
+- Honest boundary: classical (Groth16/BN254, ElGamal over Baby Jubjub), quantum-
+  breakable, needs a trusted setup. It hides *how much* and *to whom*, not *who acted*.
+  This is the compliance half of an attestation, not the anonymity half.
+
+### `vineland-stellar`: the identity primitive, proved portable
+
+`riverrun-id-wasm` is the rotatable-piece identity primitive, the thing the SKU's
+attestation is issued *about*, ported from riverrun-core and proved this month to
+compile `no_std` to `wasm32-unknown-unknown`, the exact target Soroban runs on. Real
+artifact: `target/wasm32-unknown-unknown/debug/libriverrun_id_wasm.rlib`, 7 tests
+green. See `vineland-stellar/riverrun-id-wasm/README.md` for exactly what is proved
+(the math compiles) versus what is not (no Soroban contract yet, no on-chain nullifier
+registry, no relation-checking, no live integration): named precisely, not rounded up.
+
+Neither of Stellar's own privacy tools, Confidential Tokens or Stellar Private
+Payments, ships a reusable per-context identity primitive underneath. That gap is
+exactly what riverrun ID fills, and exactly what an attestation would be issued
+against on that chain.
+
+## Architecture, and the hard boundary
 
 ```
-apps/web             React/Vite: landing, funnel, app (cofrinho, receber, empresas)
-supabase/functions    Deno (Hono) API: orders, x402, ramp, billing, merchant auth
-supabase               Postgres + auth + 14 migrations + RLS
-apps/listener          chain watcher: settles orders, writes receipts
-apps/*-connector       Shopify / VTEX store connectors
-contracts/              Soroban (Stellar): checkout, smart-wallet, receipt, subscription
-../vineland-solana     Anchor program: vineland_mandate (a separate, more exploratory
-                         fusion thread, riverrun + confidential settlement on Solana;
-                         see FUSION.md, roadmap, not the shipped product)
-../vineland-zk          Circom/Groth16 circuits + Soroban verifier: live on mainnet
-../vineland-stellar     riverrun ID ported wasm32-ready: the identity primitive layer
+vineland/                the business: SKU specs, positioning, the pilot offer
+vineland-zk/              Circom/Groth16 circuits + Soroban verifier: live on mainnet
+vineland-stellar/         riverrun-id-wasm: the identity primitive, proved portable
+../mirror-pool             riverrun itself (Solana, MIT, the bounty submission): the tech
 ```
 
-Stack: pnpm workspace, Node 22, Deno, Rust/Soroban, Anchor, Circom + snarkjs.
+**riverrun and Vineland's codebases are never merged.** riverrun stays the anonymized
+action and the cert; Vineland is the meter, the `/verify` toll-gate, and the billing
+entity that charges the integrating protocol. They wire together at the cert boundary
+only. Authorized cross-poll, 2026-07-25.
 
-## Quick start
-
-```bash
-pnpm install
-pnpm -r build
-
-# local DB
-pnpm supabase:start
-
-# env (fill with your own values, see INFRA.md)
-cp vineland/.env.example vineland/.env.local
-cp vineland/apps/web/.env.example vineland/apps/web/.env.local
-
-# web
-cd vineland/apps/web && pnpm dev
-```
-
-Full provisioning (your own accounts, contracts, domain, go-live order):
-**[INFRA.md](./INFRA.md)**. The commercial-fusion thesis (why riverrun's
-behavioral privacy and this confidential-compliance layer combine into one
-product, and the honest post-quantum boundary between them): **[FUSION.md](./FUSION.md)**.
+The Pix/dollar consumer app (`apps/web`, `supabase`, the Shopify/VTEX connectors, the
+Soroban checkout contracts) that used to lead this README was infrastructure built for
+a different, earlier product framing. It still exists in this monorepo and still
+builds, but it is no longer Vineland's primary framing: the identity-attestation
+business above is. `FUSION.md` and `INFRA.md` document that earlier thread and how to
+run it, for history, not as the current pitch.
 
 ## Status
 
-Working code; provision your own infra to run it (see INFRA.md). The licensed
-Pix on/off-ramp is a commercial agreement, not code: the one piece that closes
-the Pix-to-USDC loop end to end.
-
-`vineland-zk`: unaudited. The mandate and KYC proofs verify on mainnet; the
-trusted setup is single-contributor and demo-grade. Not for real funds until
-audited.
-
-`vineland-stellar`: the identity math is proved portable (real wasm32 artifact,
-7 tests). No Soroban contract, no on-chain integration yet, named as such in its
-own README rather than rounded up.
-
-`vineland-solana` (the FUSION.md thread): design and a Solana settlement-program
-module map, a separate, earlier-stage exploration of the same thesis on a
-different chain. Not the primary product.
+- `vineland-zk`: unaudited. Mandate and KYC proofs verify on mainnet; the trusted
+  setup is single-contributor, demo-grade. Not for real funds until audited.
+- `vineland-stellar`: identity math proved portable (real wasm32 artifact, 7 tests).
+  No Soroban contract, no on-chain integration yet.
+- The metering business: $0 revenue today. Zero integrating protocols. The gate above
+  is the falsifiable check, not a claim of traction.
 
 ## License
 
