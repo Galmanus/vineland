@@ -1,0 +1,19 @@
+[package]
+name = "riverrun-id-wasm"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "The riverrun ID rotatable-piece identity primitive, ported from riverrun-core (github.com/solanabr/mirror-pool) for chain-agnostic, wasm32-targetable use, first proved to compile for Soroban/Stellar here."
+
+[lib]
+crate-type = ["lib"]
+# A real Soroban contract provides its own panic handler and entrypoint via
+# soroban-sdk when it depends on this crate as a library; this stays a plain
+# rlib so the identity math alone, not a full contract, is what gets proved
+# portable here.
+
+[features]
+no_std = []
+
+[dependencies]
+blake3 = { version = "1.5", default-features = false }
