@@ -86,12 +86,17 @@ with the total encrypted to a regulator's key. Real proof, verifying today.
 ### `vineland-stellar`: the identity primitive, proved portable
 
 `riverrun-id-wasm` is the rotatable-piece identity primitive, the thing the SKU's
-attestation is issued *about*, ported from riverrun-core and proved this month to
-compile `no_std` to `wasm32-unknown-unknown`, the exact target Soroban runs on. Real
-artifact: `target/wasm32-unknown-unknown/debug/libriverrun_id_wasm.rlib`, 7 tests
-green. See `vineland-stellar/riverrun-id-wasm/README.md` for exactly what is proved
-(the math compiles) versus what is not (no Soroban contract yet, no on-chain nullifier
-registry, no relation-checking, no live integration): named precisely, not rounded up.
+attestation is issued *about*, ported from riverrun-core and proved to compile
+`no_std` to `wasm32-unknown-unknown`, the exact target Soroban runs on. That now
+includes the Merkle anonymity-set tree and the four native relation checkers
+(`check_turn`, `check_link`, `check_delegation`, `check_attribute`): the plaintext
+specification of what a rotation, a chosen link, a delegation, and an attribute show
+each have to enforce, not just the raw derivations. Real artifact:
+`target/wasm32-unknown-unknown/debug/libriverrun_id_wasm.rlib`, 20 tests green. See
+`vineland-stellar/riverrun-id-wasm/README.md` for exactly what is proved (the math
+and its native relation checks compile) versus what is not (no Soroban contract yet,
+no Soroban-compatible proof backend for those four relations, no on-chain nullifier
+registry, no live integration): named precisely, not rounded up.
 
 Neither of Stellar's own privacy tools, Confidential Tokens or Stellar Private
 Payments, ships a reusable per-context identity primitive underneath. That gap is
@@ -123,8 +128,9 @@ run it, for history, not as the current pitch.
 
 - `vineland-zk`: unaudited. Mandate and KYC proofs verify on mainnet; the trusted
   setup is single-contributor, demo-grade. Not for real funds until audited.
-- `vineland-stellar`: identity math proved portable (real wasm32 artifact, 7 tests).
-  No Soroban contract, no on-chain integration yet.
+- `vineland-stellar`: identity math and its native relation checks proved portable
+  (real wasm32 artifact, 20 tests). No Soroban contract, no proof backend for the
+  relations, no on-chain integration yet.
 - The metering business: $0 revenue today. Zero integrating protocols. The gate above
   is the falsifiable check, not a claim of traction.
 
