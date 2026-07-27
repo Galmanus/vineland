@@ -78,10 +78,18 @@ the same boundary `riverrun-core` already draws for Solana.
    the mirror-pool repo are the reference for what it needs to prove; today they
    target Winterfell/Plonky3 for Solana, not Soroban), then gate the registry's
    `submit_fit` behind it, turning "uniqueness-checked" into "trustless."
-3. One real integration: an anonymous vote or a KYC-gated join using riverrun ID
-   instead of a fixed account, the concrete demonstration that the primitive slots
-   under an existing Stellar privacy application rather than only being argued for.
+3. **Done, partially, named honestly:** [`../demo_anonymous_vote.sh`](../demo_anonymous_vote.sh)
+   ([writeup](../DEMO_ANONYMOUS_VOTE.md)) runs a real anonymous vote against the
+   live testnet registry: three holders each cast one vote per round via their
+   own `fit`, a repeat is rejected on-chain, a new round is independent. This is
+   the double-spend half of "an anonymous vote using riverrun ID instead of a
+   fixed account." It is not the membership half: nothing yet checks that a
+   voter was an eligible member of any set (that is step 2 above, not yet done).
+   The demo is real evidence the pieces plug together, not evidence the whole
+   claim is proven.
 
-Falsifiable check: if step 3 does not produce a working demo within a stated
-timeframe, the "chain-agnostic identity primitive" claim stays a design argument,
-not a proven one, and should be represented as such everywhere it is repeated.
+Falsifiable check: until membership checking exists (step 2, gating a real
+integration), the "chain-agnostic identity primitive, with the on-chain
+enforcement to match" claim is proven for the nullifier half and a design
+argument for the membership half. Both halves should be represented as such
+everywhere this is repeated, not rounded up to "proven."

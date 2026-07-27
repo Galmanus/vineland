@@ -72,9 +72,11 @@ stellar contract deploy \
 1. Gate `submit_fit` behind a real proof of one of the four `riverrun-id-wasm`
    relations, once a Soroban-compatible proof backend exists for them. This is
    the step that turns "uniqueness-checked" into "trustless."
-2. Wire this registry into a real integration (an anonymous vote, a KYC-gated
-   join) so `submit_fit` is called by real riverrun ID holders, not this README's
-   own smoke-test invocations.
+2. **Done, partially:** [`../demo_anonymous_vote.sh`](../demo_anonymous_vote.sh)
+   wires this registry to real riverrun ID holders (three independent secrets,
+   each deriving and submitting their own `fit`), live on testnet, with a
+   rejected repeat as evidence. What is still missing: the holders are not
+   drawn from any registered eligible-voter set, because that check needs (1).
 3. Mainnet deployment, after (1) and (2), and after the same audit bar the rest
    of this repo's contracts hold themselves to (`vineland-zk` is explicitly
    unaudited; this contract should be held to the same standard, not a lower one

@@ -103,11 +103,19 @@ not just deployed and left untouched. It checks uniqueness, not validity: it doe
 not verify a `fit` came from a genuine riverrun secret, that gate is the proof
 backend named below.
 
-See `vineland-stellar/riverrun-id-wasm/README.md` and
-`vineland-stellar/riverrun-nullifier-registry/README.md` for exactly what is
-proved versus what is not (no Soroban-compatible proof backend for the four
-relations yet, so the registry cannot yet reject an invalid `fit`, only a
-repeated one; no live integration): named precisely, not rounded up.
+`vineland-stellar/demo_anonymous_vote.sh` ([writeup](./vineland-stellar/DEMO_ANONYMOUS_VOTE.md))
+wires the two together for the first time: three independent riverrun ID
+holders each cast one vote per round against the live testnet registry, a
+repeat is rejected on-chain, a new round is independent, real transaction
+hashes as evidence. This is the double-spend half of an anonymous vote, not
+the membership half: nothing yet checks a voter belonged to any eligible-voter
+set, that gate is the proof backend below.
+
+See `vineland-stellar/riverrun-id-wasm/README.md`,
+`vineland-stellar/riverrun-nullifier-registry/README.md`, and the demo writeup
+for exactly what is proved versus what is not (no Soroban-compatible proof
+backend for the four relations yet, so nothing here checks membership, only
+uniqueness): named precisely, not rounded up.
 
 Neither of Stellar's own privacy tools, Confidential Tokens or Stellar Private
 Payments, ships a reusable per-context identity primitive underneath. That gap is
@@ -143,9 +151,10 @@ run it, for history, not as the current pitch.
 - `vineland-stellar`: identity math and its native relation checks proved portable
   (real wasm32 artifact, 20 tests). The nullifier registry is a real Soroban
   contract, live on testnet, invoked end to end (submit, query, rejected repeat).
-  Unaudited, and it checks uniqueness only: no proof backend for the four
-  relations yet, so it cannot reject an invalid `fit`, and no live integration
-  with a real riverrun ID holder beyond this repo's own smoke-test invocations.
+  The anonymous-vote demo wires both together with real riverrun ID holders and
+  real transactions. Unaudited, and the registry checks uniqueness only: no
+  proof backend for the four relations yet, so nothing on-chain yet checks that
+  a vote came from an eligible member of any set, only that it wasn't a repeat.
 - The metering business: $0 revenue today. Zero integrating protocols. The gate above
   is the falsifiable check, not a claim of traction.
 
