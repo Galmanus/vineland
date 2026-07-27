@@ -92,11 +92,22 @@ includes the Merkle anonymity-set tree and the four native relation checkers
 (`check_turn`, `check_link`, `check_delegation`, `check_attribute`): the plaintext
 specification of what a rotation, a chosen link, a delegation, and an attribute show
 each have to enforce, not just the raw derivations. Real artifact:
-`target/wasm32-unknown-unknown/debug/libriverrun_id_wasm.rlib`, 20 tests green. See
-`vineland-stellar/riverrun-id-wasm/README.md` for exactly what is proved (the math
-and its native relation checks compile) versus what is not (no Soroban contract yet,
-no Soroban-compatible proof backend for those four relations, no on-chain nullifier
-registry, no live integration): named precisely, not rounded up.
+`target/wasm32-unknown-unknown/debug/libriverrun_id_wasm.rlib`, 20 tests green.
+
+`riverrun-nullifier-registry` is the on-chain half: a Soroban contract that
+records a spent `(angle, fit)` pair once and rejects every repeat, one action per
+context, no double-spend. Deployed and invoked live on Stellar testnet:
+[`CCHUXEFY3IUGYLFRCFYVAL3VLPJELUUHAYZO7ZCZFXL3A4VOKK6Z57ZO`](https://stellar.expert/explorer/testnet/contract/CCHUXEFY3IUGYLFRCFYVAL3VLPJELUUHAYZO7ZCZFXL3A4VOKK6Z57ZO),
+with a real `submit_fit` → `is_spent` → rejected-repeat sequence run against it,
+not just deployed and left untouched. It checks uniqueness, not validity: it does
+not verify a `fit` came from a genuine riverrun secret, that gate is the proof
+backend named below.
+
+See `vineland-stellar/riverrun-id-wasm/README.md` and
+`vineland-stellar/riverrun-nullifier-registry/README.md` for exactly what is
+proved versus what is not (no Soroban-compatible proof backend for the four
+relations yet, so the registry cannot yet reject an invalid `fit`, only a
+repeated one; no live integration): named precisely, not rounded up.
 
 Neither of Stellar's own privacy tools, Confidential Tokens or Stellar Private
 Payments, ships a reusable per-context identity primitive underneath. That gap is
@@ -108,7 +119,8 @@ against on that chain.
 ```
 vineland/                the business: SKU specs, positioning, the pilot offer
 vineland-zk/              Circom/Groth16 circuits + Soroban verifier: live on mainnet
-vineland-stellar/         riverrun-id-wasm: the identity primitive, proved portable
+vineland-stellar/         riverrun-id-wasm (the identity primitive, proved portable)
+                           + riverrun-nullifier-registry (Soroban contract, live testnet)
 ../mirror-pool             riverrun itself (Solana, MIT, the bounty submission): the tech
 ```
 
@@ -129,8 +141,11 @@ run it, for history, not as the current pitch.
 - `vineland-zk`: unaudited. Mandate and KYC proofs verify on mainnet; the trusted
   setup is single-contributor, demo-grade. Not for real funds until audited.
 - `vineland-stellar`: identity math and its native relation checks proved portable
-  (real wasm32 artifact, 20 tests). No Soroban contract, no proof backend for the
-  relations, no on-chain integration yet.
+  (real wasm32 artifact, 20 tests). The nullifier registry is a real Soroban
+  contract, live on testnet, invoked end to end (submit, query, rejected repeat).
+  Unaudited, and it checks uniqueness only: no proof backend for the four
+  relations yet, so it cannot reject an invalid `fit`, and no live integration
+  with a real riverrun ID holder beyond this repo's own smoke-test invocations.
 - The metering business: $0 revenue today. Zero integrating protocols. The gate above
   is the falsifiable check, not a claim of traction.
 

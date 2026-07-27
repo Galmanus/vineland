@@ -67,13 +67,17 @@ the same boundary `riverrun-core` already draws for Solana.
 
 ## Honest next steps, in order
 
-1. A minimal Soroban contract (with `soroban-sdk`) that stores a spent-nullifier
-   set and checks a submitted `fit` against it, the on-chain half of "one action
-   per context, no double-spend", proved on Stellar testnet.
+1. ~~A minimal Soroban contract that stores a spent-nullifier set and checks a
+   submitted `fit` against it.~~ **Done:** [`../riverrun-nullifier-registry`](../riverrun-nullifier-registry),
+   deployed and proved live on Stellar testnet
+   ([`CCHUXEFY3IUGYLFRCFYVAL3VLPJELUUHAYZO7ZCZFXL3A4VOKK6Z57ZO`](https://stellar.expert/explorer/testnet/contract/CCHUXEFY3IUGYLFRCFYVAL3VLPJELUUHAYZO7ZCZFXL3A4VOKK6Z57ZO)).
+   It enforces uniqueness of `(angle, fit)`, not validity of `fit`: see that
+   crate's README for exactly what it does and does not check.
 2. A proof backend for the four relations above, on a Soroban-compatible target
    (this repo's `paper/riverrun.tex` and `crates/riverrun-stark`/`riverrun-m31` in
    the mirror-pool repo are the reference for what it needs to prove; today they
-   target Winterfell/Plonky3 for Solana, not Soroban).
+   target Winterfell/Plonky3 for Solana, not Soroban), then gate the registry's
+   `submit_fit` behind it, turning "uniqueness-checked" into "trustless."
 3. One real integration: an anonymous vote or a KYC-gated join using riverrun ID
    instead of a fixed account, the concrete demonstration that the primitive slots
    under an existing Stellar privacy application rather than only being argued for.

@@ -1,0 +1,30 @@
+[package]
+name = "riverrun-nullifier-registry"
+version = "0.1.0"
+edition = "2021"
+authors = ["Manuel Galmanus <manuel@bluewaveai.online>"]
+description = "Soroban contract: the on-chain half of riverrun ID's one-action-per-context rule. Stores spent fit()/nullifier values per angle and rejects a repeat. Does not verify a riverrun relation proof; that is real, separate, unstarted work (see vineland-stellar/riverrun-id-wasm/README.md)."
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+soroban-sdk = "26"
+
+[dev-dependencies]
+soroban-sdk = { version = "26", features = ["testutils"] }
+
+[profile.release]
+opt-level = "z"
+overflow-checks = true
+debug = 0
+strip = "symbols"
+debug-assertions = false
+panic = "abort"
+codegen-units = 1
+lto = true
+
+[profile.release-with-logs]
+inherits = "release"
+debug-assertions = true
